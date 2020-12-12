@@ -31,7 +31,7 @@ public class SimpleProtoToRowTest extends TestCase {
 			.build();
 
 		RowData row = deserializationSchema.deserialize(simple.toByteArray());
-		row = FlinkProtobufHelper.validateRow(
+		row = ProtobufTestHelper.validateRow(
 			row,
 			PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor()));
 
@@ -64,7 +64,7 @@ public class SimpleProtoToRowTest extends TestCase {
 			.build();
 
 		RowData row = deserializationSchema.deserialize(simple.toByteArray());
-		row = FlinkProtobufHelper.validateRow(row, rowType);
+		row = ProtobufTestHelper.validateRow(row, rowType);
 
 		assertTrue(row.isNullAt(0));
 		assertFalse(row.isNullAt(1));
@@ -86,7 +86,7 @@ public class SimpleProtoToRowTest extends TestCase {
 			.build();
 
 		RowData row = deserializationSchema.deserialize(simple.toByteArray());
-		row = FlinkProtobufHelper.validateRow(row, rowType);
+		row = ProtobufTestHelper.validateRow(row, rowType);
 
 		assertFalse(row.isNullAt(0));
 		assertFalse(row.isNullAt(1));

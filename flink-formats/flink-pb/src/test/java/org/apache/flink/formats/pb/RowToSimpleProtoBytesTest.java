@@ -22,7 +22,7 @@ public class RowToSimpleProtoBytesTest extends TestCase {
 			StringData.fromString("IMAGES"));
 
 		RowType rowType = PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor());
-		row = FlinkProtobufHelper.validateRow(row, rowType);
+		row = ProtobufTestHelper.validateRow(row, rowType);
 
 		PbRowSerializationSchema serializationSchema = new PbRowSerializationSchema(
 			rowType,
@@ -53,7 +53,7 @@ public class RowToSimpleProtoBytesTest extends TestCase {
 			null);
 
 		RowType rowtype = PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor());
-		row = FlinkProtobufHelper.validateRow(row, rowtype);
+		row = ProtobufTestHelper.validateRow(row, rowtype);
 
 		PbRowSerializationSchema serializationSchema = new PbRowSerializationSchema(
 			rowtype,

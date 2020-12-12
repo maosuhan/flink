@@ -30,7 +30,7 @@ public class OuterMultiProtoToRowTest extends TestCase {
 			.build();
 
 		RowData row = deserializationSchema.deserialize(simple.toByteArray());
-		row = FlinkProtobufHelper.validateRow(row, rowType);
+		row = ProtobufTestHelper.validateRow(row, rowType);
 
 		assertEquals(7, row.getArity());
 		assertEquals(1, row.getInt(0));

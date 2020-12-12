@@ -18,7 +18,7 @@ public class RowToRepeatedMessageProtoBytesTest extends TestCase {
 		RowData row = GenericRowData.of(tmp);
 
 		RowType rowType = PbRowTypeInformation.generateRowType(RepeatedMessageTest.getDescriptor());
-		row = FlinkProtobufHelper.validateRow(row, rowType);
+		row = ProtobufTestHelper.validateRow(row, rowType);
 
 		PbRowSerializationSchema serializationSchema = new PbRowSerializationSchema(
 			rowType,

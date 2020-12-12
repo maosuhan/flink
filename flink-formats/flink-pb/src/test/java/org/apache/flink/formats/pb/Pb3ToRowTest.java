@@ -39,7 +39,7 @@ public class Pb3ToRowTest extends TestCase {
 			.putMap2("f", innerMessageTest).build();
 
 		RowData row = deserializationSchema.deserialize(mapTest.toByteArray());
-		row = FlinkProtobufHelper.validateRow(row, rowType);
+		row = ProtobufTestHelper.validateRow(row, rowType);
 
 		assertEquals(1, row.getInt(0));
 		assertEquals(2L, row.getLong(1));
@@ -82,7 +82,7 @@ public class Pb3ToRowTest extends TestCase {
 		Pb3Test mapTest = Pb3Test.newBuilder().build();
 
 		RowData row = deserializationSchema.deserialize(mapTest.toByteArray());
-		row = FlinkProtobufHelper.validateRow(row, rowType);
+		row = ProtobufTestHelper.validateRow(row, rowType);
 
 		assertFalse(row.isNullAt(0));
 		assertFalse(row.isNullAt(1));
