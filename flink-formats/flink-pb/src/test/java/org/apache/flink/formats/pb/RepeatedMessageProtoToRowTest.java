@@ -37,7 +37,7 @@ public class RepeatedMessageProtoToRowTest extends TestCase {
 			.build();
 
 		RowData row = deserializationSchema.deserialize(repeatedMessageTest.toByteArray());
-		row = FlinkProtobufHelper.validateRow(row, rowType);
+		row = ProtobufTestHelper.validateRow(row, rowType);
 
 		ArrayData objs = row.getArray(0);
 		RowData subRow = objs.getRow(0, 2);

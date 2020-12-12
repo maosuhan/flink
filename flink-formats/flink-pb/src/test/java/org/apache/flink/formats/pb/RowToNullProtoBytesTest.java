@@ -10,7 +10,7 @@ import org.apache.flink.table.data.StringData;
 import com.google.protobuf.ByteString;
 import junit.framework.TestCase;
 
-import static org.apache.flink.formats.pb.FlinkProtobufHelper.mapOf;
+import static org.apache.flink.formats.pb.ProtobufTestHelper.mapOf;
 
 public class RowToNullProtoBytesTest extends TestCase {
 	public void testSimple() throws Exception {
@@ -57,7 +57,7 @@ public class RowToNullProtoBytesTest extends TestCase {
 			//bytes, cannot be null
 			new GenericArrayData(new Object[]{null})
 		);
-		byte[] bytes = FlinkProtobufHelper.rowToPbBytesWithoutValidation(row, NullTest.class);
+		byte[] bytes = ProtobufTestHelper.rowToPbBytesWithoutValidation(row, NullTest.class);
 		NullTest nullTest = NullTest.parseFrom(bytes);
 		//string map
 		assertEquals(2, nullTest.getStringMapCount());

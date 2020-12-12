@@ -26,7 +26,7 @@ public class RepeatedProtoToRowTest extends TestCase {
 			.build();
 
 		RowData row = deserializationSchema.deserialize(simple.toByteArray());
-		row = FlinkProtobufHelper.validateRow(row, rowType);
+		row = ProtobufTestHelper.validateRow(row, rowType);
 
 		assertEquals(6, row.getArity());
 		assertEquals(1, row.getInt(0));

@@ -34,7 +34,7 @@ public class MultiLevelMessageProtoToRowTest extends TestCase {
 			.build();
 
 		RowData row = deserializationSchema.deserialize(multipleLevelMessageTest.toByteArray());
-		row = FlinkProtobufHelper.validateRow(row, rowType);
+		row = ProtobufTestHelper.validateRow(row, rowType);
 
 		assertEquals(4, row.getArity());
 		RowData subRow = (RowData) row.getRow(3, 2);
