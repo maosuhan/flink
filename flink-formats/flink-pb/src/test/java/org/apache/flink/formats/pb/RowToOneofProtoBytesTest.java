@@ -10,7 +10,7 @@ public class RowToOneofProtoBytesTest extends TestCase {
 	public void testSimple() throws Exception {
 		RowData row = GenericRowData.of(1, 2);
 
-		byte[] bytes = FlinkProtobufHelper.rowToPbBytes(row, OneofTest.class);
+		byte[] bytes = ProtobufTestHelper.rowToPbBytes(row, OneofTest.class);
 		OneofTest oneofTest = OneofTest.parseFrom(bytes);
 		assertFalse(oneofTest.hasA());
 		assertEquals(2, oneofTest.getB());

@@ -15,7 +15,7 @@ public class RowToMultipleLevelMessageProtoBytesTest extends TestCase {
 		RowData row = GenericRowData.of(1, 2L, false, subRow);
 
 		RowType rowType = PbRowTypeInformation.generateRowType(MultipleLevelMessageTest.getDescriptor());
-		row = FlinkProtobufHelper.validateRow(row, rowType);
+		row = ProtobufTestHelper.validateRow(row, rowType);
 
 		PbRowSerializationSchema serializationSchema = new PbRowSerializationSchema(
 			rowType,
@@ -33,7 +33,7 @@ public class RowToMultipleLevelMessageProtoBytesTest extends TestCase {
 
 	public void testNull() throws Exception {
 		RowData row = GenericRowData.of(1, 2L, false, null);
-		byte[] bytes = FlinkProtobufHelper.rowToPbBytes(row, MultipleLevelMessageTest.class);
+		byte[] bytes = ProtobufTestHelper.rowToPbBytes(row, MultipleLevelMessageTest.class);
 
 		MultipleLevelMessageTest test = MultipleLevelMessageTest.parseFrom(bytes);
 

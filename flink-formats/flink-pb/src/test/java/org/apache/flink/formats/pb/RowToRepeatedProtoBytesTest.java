@@ -21,7 +21,7 @@ public class RowToRepeatedProtoBytesTest extends TestCase {
 			StringData.fromString("hello"));
 
 		RowType rowType = PbRowTypeInformation.generateRowType(RepeatedTest.getDescriptor());
-		row = FlinkProtobufHelper.validateRow(row, rowType);
+		row = ProtobufTestHelper.validateRow(row, rowType);
 
 		PbRowSerializationSchema serializationSchema = new PbRowSerializationSchema(
 			rowType,
@@ -45,7 +45,7 @@ public class RowToRepeatedProtoBytesTest extends TestCase {
 			StringData.fromString("hello"));
 
 		RowType rowType = PbRowTypeInformation.generateRowType(RepeatedTest.getDescriptor());
-		row = FlinkProtobufHelper.validateRow(row, rowType);
+		row = ProtobufTestHelper.validateRow(row, rowType);
 
 		PbRowSerializationSchema serializationSchema = new PbRowSerializationSchema(
 			rowType,
@@ -58,7 +58,7 @@ public class RowToRepeatedProtoBytesTest extends TestCase {
 
 	public void testNull() throws Exception {
 		RowData row = GenericRowData.of(1, null, false, 0.1f, 0.01, StringData.fromString("hello"));
-		byte[] bytes = FlinkProtobufHelper.rowToPbBytes(row, RepeatedTest.class);
+		byte[] bytes = ProtobufTestHelper.rowToPbBytes(row, RepeatedTest.class);
 		RepeatedTest repeatedTest = RepeatedTest.parseFrom(bytes);
 		assertEquals(0, repeatedTest.getBCount());
 	}

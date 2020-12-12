@@ -29,7 +29,7 @@ public class MapProtoToRowTest extends TestCase {
 			.putMap2("f", innerMessageTest).build();
 
 		RowData row = deserializationSchema.deserialize(mapTest.toByteArray());
-		row = FlinkProtobufHelper.validateRow(row, rowType);
+		row = ProtobufTestHelper.validateRow(row, rowType);
 
 		MapData map1 = row.getMap(1);
 		assertEquals("a", map1.keyArray().getString(0).toString());

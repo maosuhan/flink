@@ -24,7 +24,7 @@ public class OneofProtoToRowTest extends TestCase {
 			.build();
 
 		RowData row = deserializationSchema.deserialize(oneofTest.toByteArray());
-		row = FlinkProtobufHelper.validateRow(row, rowType);
+		row = ProtobufTestHelper.validateRow(row, rowType);
 
 		assertTrue(row.isNullAt(0));
 		assertEquals(2, row.getInt(1));
