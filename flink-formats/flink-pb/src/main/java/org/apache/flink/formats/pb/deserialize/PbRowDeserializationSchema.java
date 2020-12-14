@@ -53,7 +53,7 @@ public class PbRowDeserializationSchema implements DeserializationSchema<RowData
 	 * Flag indicating whether to ignore invalid fields/rows
 	 */
 	private final boolean ignoreParseErrors;
-	private final boolean ignoreDefaultValues;
+	private final boolean readDefaultValues;
 
 	private transient ProtoToRowConverter protoToRowConverter;
 
@@ -62,13 +62,13 @@ public class PbRowDeserializationSchema implements DeserializationSchema<RowData
 		TypeInformation<RowData> resultTypeInfo,
 		String messageClassName,
 		boolean ignoreParseErrors,
-		boolean ignoreDefaultValues) {
+		boolean readDefaultValues) {
 		checkNotNull(rowType, "Type information");
 		this.rowType = rowType;
 		this.resultTypeInfo = resultTypeInfo;
 		this.messageClassName = messageClassName;
 		this.ignoreParseErrors = ignoreParseErrors;
-		this.ignoreDefaultValues = ignoreDefaultValues;
+		this.readDefaultValues = readDefaultValues;
 		//do it in client side to report error in the first place
 		new PbSchemaValidator(PbFormatUtils.getDescriptor(messageClassName), rowType).validate();
 		//this step is only used to validate codegen in client side in the first place
@@ -76,7 +76,7 @@ public class PbRowDeserializationSchema implements DeserializationSchema<RowData
 			protoToRowConverter = new ProtoToRowConverter(
 				messageClassName,
 				rowType,
-				ignoreDefaultValues);
+				readDefaultValues);
 		} catch (PbCodegenException e) {
 			throw new FlinkRuntimeException(e);
 		}
@@ -87,7 +87,7 @@ public class PbRowDeserializationSchema implements DeserializationSchema<RowData
 		protoToRowConverter = new ProtoToRowConverter(
 			messageClassName,
 			rowType,
-			ignoreDefaultValues);
+			readDefaultValues);
 	}
 
 	@Override
@@ -123,7 +123,7 @@ public class PbRowDeserializationSchema implements DeserializationSchema<RowData
 		}
 		PbRowDeserializationSchema that = (PbRowDeserializationSchema) o;
 		return ignoreParseErrors == that.ignoreParseErrors &&
-			ignoreDefaultValues == that.ignoreDefaultValues &&
+			readDefaultValues == that.readDefaultValues &&
 			Objects.equals(rowType, that.rowType) &&
 			Objects.equals(resultTypeInfo, that.resultTypeInfo) &&
 			Objects.equals(messageClassName, that.messageClassName);
@@ -136,6 +136,6 @@ public class PbRowDeserializationSchema implements DeserializationSchema<RowData
 			resultTypeInfo,
 			messageClassName,
 			ignoreParseErrors,
-			ignoreDefaultValues);
+			readDefaultValues);
 	}
 }

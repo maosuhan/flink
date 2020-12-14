@@ -20,7 +20,7 @@ public class RepeatedProtoToRowTest{
 			InternalTypeInfo.of(rowType),
 			RepeatedTest.class.getName(),
 			false,
-			true);
+			false);
 
 		RepeatedTest simple = RepeatedTest.newBuilder()
 			.setA(1)

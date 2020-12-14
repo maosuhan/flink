@@ -14,14 +14,14 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-public class Pb3ToRowTest{
+public class Pb3ToRowTest {
 	@Test
 	public void testMessage() throws Exception {
 		RowType rowType = PbRowTypeInformation.generateRowType(Pb3Test.getDescriptor());
 		PbRowDeserializationSchema deserializationSchema = new PbRowDeserializationSchema(
 			rowType,
 			InternalTypeInfo.of(rowType),
-			Pb3Test.class.getName(), false, true);
+			Pb3Test.class.getName(), false, false);
 
 		Pb3Test.InnerMessageTest innerMessageTest = Pb3Test.InnerMessageTest
 			.newBuilder()
@@ -48,8 +48,8 @@ public class Pb3ToRowTest{
 		assertEquals(1, row.getInt(0));
 		assertEquals(2L, row.getLong(1));
 		assertEquals("haha", row.getString(2).toString());
-		assertEquals(1.1f, row.getFloat(3));
-		assertEquals(1.2, row.getDouble(4));
+		assertEquals(Float.valueOf(1.1f), Float.valueOf(row.getFloat(3)));
+		assertEquals(Double.valueOf(1.2), Double.valueOf(row.getDouble(4)));
 		assertEquals("IMAGES", row.getString(5).toString());
 
 		RowData rowData = row.getRow(6, 2);
@@ -82,7 +82,7 @@ public class Pb3ToRowTest{
 		PbRowDeserializationSchema deserializationSchema = new PbRowDeserializationSchema(
 			rowType,
 			InternalTypeInfo.of(rowType),
-			Pb3Test.class.getName(), false, true);
+			Pb3Test.class.getName(), false, false);
 
 		Pb3Test mapTest = Pb3Test.newBuilder().build();
 
@@ -104,8 +104,8 @@ public class Pb3ToRowTest{
 		assertEquals(0, row.getInt(0));
 		assertEquals(0L, row.getLong(1));
 		assertEquals("", row.getString(2).toString());
-		assertEquals(0.0f, row.getFloat(3));
-		assertEquals(0.0, row.getDouble(4));
+		assertEquals(Float.valueOf(0.0f), Float.valueOf(row.getFloat(3)));
+		assertEquals(Double.valueOf(0.0d), Double.valueOf(row.getDouble(4)));
 		assertEquals("UNIVERSAL", row.getString(5).toString());
 
 		RowData rowData = row.getRow(6, 2);

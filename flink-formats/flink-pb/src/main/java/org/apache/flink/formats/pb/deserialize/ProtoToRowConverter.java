@@ -32,12 +32,12 @@ public class ProtoToRowConverter {
 	public ProtoToRowConverter(
 		String messageClassName,
 		RowType rowType,
-		boolean ignoreDefaultValues) throws PbCodegenException {
+		boolean readDefaultValues) throws PbCodegenException {
 		try {
 			Descriptors.Descriptor descriptor = PbFormatUtils.getDescriptor(messageClassName);
 			Class<?> messageClass = Class.forName(messageClassName);
 			if (descriptor.getFile().getSyntax() == Syntax.PROTO3) {
-				ignoreDefaultValues = false;
+				readDefaultValues = true;
 			}
 			se = new ScriptEvaluator();
 			se.setParameters(new String[]{"message"}, new Class[]{messageClass});
@@ -59,7 +59,7 @@ public class ProtoToRowConverter {
 			PbCodegenDeserializer codegenDes = PbCodegenDeserializeFactory.getPbCodegenTopRowDes(
 				descriptor,
 				rowType,
-				ignoreDefaultValues);
+				readDefaultValues);
 			String genCode = codegenDes.codegen("rowData", "message");
 			codegenAppender.appendSegment(genCode);
 			codegenAppender.appendLine("return rowData");

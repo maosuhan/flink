@@ -13,15 +13,15 @@ import com.google.protobuf.Descriptors;
 public class PbCodegenMapDeserializer implements PbCodegenDeserializer {
 	private Descriptors.FieldDescriptor fd;
 	private MapType mapType;
-	private boolean ignoreDefaultValues;
+	private boolean readDefaultValues;
 
 	public PbCodegenMapDeserializer(
 		Descriptors.FieldDescriptor fd,
 		MapType mapType,
-		boolean ignoreDefaultValues) {
+		boolean readDefaultValues) {
 		this.fd = fd;
 		this.mapType = mapType;
-		this.ignoreDefaultValues = ignoreDefaultValues;
+		this.readDefaultValues = readDefaultValues;
 	}
 
 	@Override
@@ -58,11 +58,11 @@ public class PbCodegenMapDeserializer implements PbCodegenDeserializer {
 		PbCodegenDeserializer keyDes = PbCodegenDeserializeFactory.getPbCodegenDes(
 			keyFd,
 			keyType,
-			ignoreDefaultValues);
+			readDefaultValues);
 		PbCodegenDeserializer valueDes = PbCodegenDeserializeFactory.getPbCodegenDes(
 			valueFd,
 			valueType,
-			ignoreDefaultValues);
+			readDefaultValues);
 		String keyGenCode = keyDes.codegen(
 			keyDataVar,
 			"((" + pbKeyTypeStr + ")" + pbMapEntryVar + ".getKey())");

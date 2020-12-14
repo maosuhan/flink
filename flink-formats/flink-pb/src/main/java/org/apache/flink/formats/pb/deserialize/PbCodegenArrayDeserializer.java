@@ -11,16 +11,16 @@ import com.google.protobuf.Descriptors;
 public class PbCodegenArrayDeserializer implements PbCodegenDeserializer {
 	private Descriptors.FieldDescriptor fd;
 	private LogicalType elementType;
-	private boolean ignoreDefaultValues;
+	private boolean readDefaultValues;
 	private PbCodegenAppender appender = new PbCodegenAppender();
 
 	public PbCodegenArrayDeserializer(
 		Descriptors.FieldDescriptor fd,
 		LogicalType elementType,
-		boolean ignoreDefaultValues) {
+		boolean readDefaultValues) {
 		this.fd = fd;
 		this.elementType = elementType;
-		this.ignoreDefaultValues = ignoreDefaultValues;
+		this.readDefaultValues = readDefaultValues;
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class PbCodegenArrayDeserializer implements PbCodegenDeserializer {
 		PbCodegenDeserializer codegenDes = PbCodegenDeserializeFactory.getPbCodegenDes(
 			fd,
 			elementType,
-			ignoreDefaultValues);
+			readDefaultValues);
 		String code = codegenDes.codegen(subReturnDataVar, subPbObjVar);
 		appender.appendSegment(code);
 		appender.appendLine(newArrDataVar + "[" + iVar + "]=" + subReturnDataVar + "");

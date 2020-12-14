@@ -39,8 +39,8 @@ public class RowToSimpleProtoBytesTest {
 		assertEquals(1, simpleTest.getA());
 		assertEquals(2L, simpleTest.getB());
 		assertFalse(simpleTest.getC());
-		assertEquals(0.1f, simpleTest.getD());
-		assertEquals(0.01, simpleTest.getE());
+		assertEquals(Float.valueOf(0.1f), Float.valueOf(simpleTest.getD()));
+		assertEquals(Double.valueOf(0.01d), Double.valueOf(simpleTest.getE()));
 		assertEquals("hello", simpleTest.getF());
 		assertEquals(1, simpleTest.getG().byteAt(0));
 		assertEquals(SimpleTest.Corpus.IMAGES, simpleTest.getH());

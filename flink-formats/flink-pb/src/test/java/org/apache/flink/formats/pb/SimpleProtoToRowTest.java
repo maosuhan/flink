@@ -22,7 +22,7 @@ public class SimpleProtoToRowTest {
 			InternalTypeInfo.of(rowType),
 			SimpleTest.class.getName(),
 			false,
-			true);
+			false);
 
 		SimpleTest simple = SimpleTest.newBuilder()
 			.setA(1)
@@ -44,8 +44,8 @@ public class SimpleProtoToRowTest {
 		assertEquals(1, row.getInt(0));
 		assertEquals(2L, row.getLong(1));
 		assertFalse((boolean) row.getBoolean(2));
-		assertEquals(0.1f, row.getFloat(3));
-		assertEquals(0.01, row.getDouble(4));
+		assertEquals(Float.valueOf(0.1f), Float.valueOf(row.getFloat(3)));
+		assertEquals(Double.valueOf(0.01d), Double.valueOf(row.getDouble(4)));
 		assertEquals("haha", row.getString(5).toString());
 		assertEquals(1, (row.getBinary(6))[0]);
 		assertEquals("IMAGES", row.getString(7).toString());
@@ -59,7 +59,7 @@ public class SimpleProtoToRowTest {
 			InternalTypeInfo.of(rowType),
 			SimpleTest.class.getName(),
 			false,
-			true);
+			false);
 
 		SimpleTest simple = SimpleTest.newBuilder()
 			.setB(2L)
@@ -84,7 +84,7 @@ public class SimpleProtoToRowTest {
 			InternalTypeInfo.of(rowType),
 			SimpleTest.class.getName(),
 			false,
-			false);
+			true);
 
 		SimpleTest simple = SimpleTest.newBuilder()
 			.setC(false)
