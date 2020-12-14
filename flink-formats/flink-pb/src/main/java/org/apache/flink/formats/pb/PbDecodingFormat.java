@@ -13,15 +13,15 @@ import org.apache.flink.table.types.logical.RowType;
 public class PbDecodingFormat implements DecodingFormat<DeserializationSchema<RowData>> {
 	private String messageClassName;
 	private boolean ignoreParseErrors;
-	private boolean ignoreDefaultValues;
+	private boolean readDefaultValues;
 
 	public PbDecodingFormat(
 		String messageClassName,
 		boolean ignoreParseErrors,
-		boolean ignoreDefaultValues) {
+		boolean readDefaultValues) {
 		this.messageClassName = messageClassName;
 		this.ignoreParseErrors = ignoreParseErrors;
-		this.ignoreDefaultValues = ignoreDefaultValues;
+		this.readDefaultValues = readDefaultValues;
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class PbDecodingFormat implements DecodingFormat<DeserializationSchema<Ro
 			rowDataTypeInfo,
 			this.messageClassName,
 			this.ignoreParseErrors,
-			this.ignoreDefaultValues);
+			this.readDefaultValues);
 	}
 
 	@Override

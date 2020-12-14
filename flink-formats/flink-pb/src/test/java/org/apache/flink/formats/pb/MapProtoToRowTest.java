@@ -18,7 +18,7 @@ public class MapProtoToRowTest{
 		PbRowDeserializationSchema deserializationSchema = new PbRowDeserializationSchema(
 			rowType,
 			InternalTypeInfo.of(rowType),
-			MapTest.class.getName(), false, true);
+			MapTest.class.getName(), false, false);
 
 		MapTest.InnerMessageTest innerMessageTest = MapTest.InnerMessageTest
 			.newBuilder()

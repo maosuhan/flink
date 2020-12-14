@@ -15,17 +15,17 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
 	private List<Descriptors.FieldDescriptor> fds;
 	private Descriptors.Descriptor descriptor;
 	private RowType rowType;
-	private boolean ignoreDefaultValues;
+	private boolean readDefaultValues;
 	private PbCodegenAppender appender = new PbCodegenAppender();
 
 	public PbCodegenRowDeserializer(
 		Descriptors.Descriptor descriptor,
 		RowType rowType,
-		boolean ignoreDefaultValues) {
+		boolean readDefaultValues) {
 		this.fds = descriptor.getFields();
 		this.rowType = rowType;
 		this.descriptor = descriptor;
-		this.ignoreDefaultValues = ignoreDefaultValues;
+		this.readDefaultValues = readDefaultValues;
 	}
 
 	@Override
@@ -54,15 +54,15 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
 			PbCodegenDeserializer codegen = PbCodegenDeserializeFactory.getPbCodegenDes(
 				elementFd,
 				subType,
-				ignoreDefaultValues);
+				readDefaultValues);
 			appender.appendLine("Object " + elementDataVar + " = null");
-			if (ignoreDefaultValues) {
-				//only works in syntax=proto2 and ignoreDefaultValues=true
+			if (!readDefaultValues) {
+				//only works in syntax=proto2 and readDefaultValues=false
+				//readDefaultValues must be true in pb3 mode
 				String isMessageNonEmptyStr = isMessageNonEmptyStr(
 					pbMessageVar,
 					strongCamelFieldName,
 					elementFd);
-				//ignoreDefaultValues must be false in pb3 mode or compilation error will occur
 				appender.appendRawLine("if(" + isMessageNonEmptyStr + "){");
 			}
 			String elementMessageGetStr = pbMessageElementGetStr(
@@ -93,7 +93,7 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
 
 			String code = codegen.codegen(elementDataVar, elementMessageGetStr);
 			appender.appendSegment(code);
-			if (ignoreDefaultValues) {
+			if (!readDefaultValues) {
 				appender.appendRawLine("}");
 			}
 			appender.appendLine(

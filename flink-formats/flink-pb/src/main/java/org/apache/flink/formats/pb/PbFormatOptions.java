@@ -19,7 +19,7 @@ public class PbFormatOptions {
 		.withDescription(
 			"Optional flag to skip rows with parse errors instead of failing; false by default.");
 
-	public static final ConfigOption<Boolean> IGNORE_DEFAULT_VALUES = ConfigOptions
+	public static final ConfigOption<Boolean> READ_DEFAULT_VALUES = ConfigOptions
 		.key("read-default-values")
 		.booleanType()
 		.defaultValue(false)

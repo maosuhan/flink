@@ -20,7 +20,7 @@ public class OneofProtoToRowTest{
 			InternalTypeInfo.of(rowType),
 			OneofTest.class.getName(),
 			false,
-			true);
+			false);
 
 		OneofTest oneofTest = OneofTest.newBuilder()
 			.setA(1)
