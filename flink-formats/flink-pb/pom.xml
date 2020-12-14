@@ -67,6 +67,7 @@ under the License.
 			<artifactId>janino</artifactId>
 			<!-- this should be the same version of flink-table module -->
 			<version>${janino.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
