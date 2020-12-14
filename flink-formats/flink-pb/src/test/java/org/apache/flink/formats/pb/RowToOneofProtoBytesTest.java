@@ -24,7 +24,6 @@ import org.apache.flink.table.data.RowData;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class RowToOneofProtoBytesTest {
