@@ -26,8 +26,8 @@ public class PbFormatFactory implements DeserializationFormatFactory, Serializat
 		FactoryUtil.validateFactoryOptions(this, formatOptions);
 		final String messageClassName = formatOptions.get(PbFormatOptions.MESSAGE_CLASS_NAME);
 		boolean ignoreParseErrors = formatOptions.get(PbFormatOptions.IGNORE_PARSE_ERRORS);
-		boolean ignoreDefaultValues = formatOptions.get(PbFormatOptions.IGNORE_DEFAULT_VALUES);
-		return new PbDecodingFormat(messageClassName, ignoreParseErrors, ignoreDefaultValues);
+		boolean readDefaultValues = formatOptions.get(PbFormatOptions.READ_DEFAULT_VALUES);
+		return new PbDecodingFormat(messageClassName, ignoreParseErrors, readDefaultValues);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class PbFormatFactory implements DeserializationFormatFactory, Serializat
 	public Set<ConfigOption<?>> optionalOptions() {
 		Set<ConfigOption<?>> result = new HashSet<>();
 		result.add(PbFormatOptions.IGNORE_PARSE_ERRORS);
-		result.add(PbFormatOptions.IGNORE_DEFAULT_VALUES);
+		result.add(PbFormatOptions.READ_DEFAULT_VALUES);
 		return result;
 	}
 

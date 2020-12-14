@@ -17,6 +17,6 @@ public class OuterNoMultiProtoToRowTest {
 			InternalTypeInfo.of(rowType),
 			SimpleTestOuterNomultiProto.SimpleTestOuterNomulti.class.getName(),
 			false,
-			true);
+			false);
 	}
 }

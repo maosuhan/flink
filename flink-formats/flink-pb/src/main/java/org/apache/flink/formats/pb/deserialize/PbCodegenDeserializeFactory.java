@@ -13,17 +13,17 @@ public class PbCodegenDeserializeFactory {
 	public static PbCodegenDeserializer getPbCodegenDes(
 		Descriptors.FieldDescriptor fd,
 		LogicalType type,
-		boolean ignoreDefaultValues) throws PbCodegenException {
+		boolean readDefaultValues) throws PbCodegenException {
 		if (type instanceof RowType) {
 			return new PbCodegenRowDeserializer(fd.getMessageType(), (RowType) type,
-				ignoreDefaultValues);
+				readDefaultValues);
 		} else if (PbFormatUtils.isSimpleType(type)) {
-			return new PbCodegenSimpleDeserializer(fd, type, ignoreDefaultValues);
+			return new PbCodegenSimpleDeserializer(fd);
 		} else if (type instanceof ArrayType) {
 			return new PbCodegenArrayDeserializer(
-				fd, ((ArrayType) type).getElementType(), ignoreDefaultValues);
+				fd, ((ArrayType) type).getElementType(), readDefaultValues);
 		} else if (type instanceof MapType) {
-			return new PbCodegenMapDeserializer(fd, (MapType) type, ignoreDefaultValues);
+			return new PbCodegenMapDeserializer(fd, (MapType) type, readDefaultValues);
 		} else {
 			throw new PbCodegenException("cannot support flink type: " + type);
 		}
@@ -32,7 +32,7 @@ public class PbCodegenDeserializeFactory {
 	public static PbCodegenDeserializer getPbCodegenTopRowDes(
 		Descriptors.Descriptor descriptor,
 		RowType rowType,
-		boolean ignoreDefaultValues) {
-		return new PbCodegenRowDeserializer(descriptor, rowType, ignoreDefaultValues);
+		boolean readDefaultValues) {
+		return new PbCodegenRowDeserializer(descriptor, rowType, readDefaultValues);
 	}
 }

@@ -1,21 +1,13 @@
 package org.apache.flink.formats.pb.deserialize;
 
-import org.apache.flink.table.types.logical.LogicalType;
-
 import com.google.protobuf.Descriptors;
 
 public class PbCodegenSimpleDeserializer implements PbCodegenDeserializer {
 	private Descriptors.FieldDescriptor fd;
-	private LogicalType type;
-	private boolean ignoreDefaultValues;
 
 	public PbCodegenSimpleDeserializer(
-		Descriptors.FieldDescriptor fd,
-		LogicalType type,
-		boolean ignoreDefaultValues) {
+		Descriptors.FieldDescriptor fd) {
 		this.fd = fd;
-		this.type = type;
-		this.ignoreDefaultValues = ignoreDefaultValues;
 	}
 
 	@Override

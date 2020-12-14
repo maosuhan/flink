@@ -20,7 +20,7 @@ public class MultiLevelMessageProtoToRowTest{
 			InternalTypeInfo.of(rowType),
 			MultipleLevelMessageTest.class.getName(),
 			false,
-			true);
+			false);
 
 		MultipleLevelMessageTest.InnerMessageTest1.InnerMessageTest2 innerMessageTest2 = MultipleLevelMessageTest.InnerMessageTest1.InnerMessageTest2
 			.newBuilder()

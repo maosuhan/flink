@@ -20,7 +20,7 @@ public class RepeatedMessageProtoToRowTest{
 			InternalTypeInfo.of(rowType),
 			RepeatedMessageTest.class.getName(),
 			false,
-			true);
+			false);
 
 		RepeatedMessageTest.InnerMessageTest innerMessageTest = RepeatedMessageTest.InnerMessageTest
 			.newBuilder()
