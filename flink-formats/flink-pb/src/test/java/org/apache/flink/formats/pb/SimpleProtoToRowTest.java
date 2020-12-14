@@ -33,6 +33,7 @@ public class SimpleProtoToRowTest {
 			.setF("haha")
 			.setG(ByteString.copyFrom(new byte[]{1}))
 			.setH(SimpleTest.Corpus.IMAGES)
+			.setFAbc7D(1) // test fieldNameToJsonName
 			.build();
 
 		RowData row = deserializationSchema.deserialize(simple.toByteArray());
@@ -40,7 +41,7 @@ public class SimpleProtoToRowTest {
 			row,
 			PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor()));
 
-		assertEquals(8, row.getArity());
+		assertEquals(9, row.getArity());
 		assertEquals(1, row.getInt(0));
 		assertEquals(2L, row.getLong(1));
 		assertFalse((boolean) row.getBoolean(2));
@@ -49,6 +50,7 @@ public class SimpleProtoToRowTest {
 		assertEquals("haha", row.getString(5).toString());
 		assertEquals(1, (row.getBinary(6))[0]);
 		assertEquals("IMAGES", row.getString(7).toString());
+		assertEquals(1, row.getInt(8));
 	}
 
 	@Test
