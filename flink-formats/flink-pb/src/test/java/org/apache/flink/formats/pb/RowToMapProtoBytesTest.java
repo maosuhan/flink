@@ -6,12 +6,15 @@ import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.data.StringData;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RowToMapProtoBytesTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+
+public class RowToMapProtoBytesTest{
+	@Test
 	public void testSimple() throws Exception {
 		Map map1 = new HashMap();
 		map1.put(StringData.fromString("a"), StringData.fromString("b"));
@@ -29,6 +32,7 @@ public class RowToMapProtoBytesTest extends TestCase {
 		assertEquals(2L, innerMessageTest.getB());
 	}
 
+	@Test
 	public void testNull() throws Exception {
 		RowData row = GenericRowData.of(1, null, null);
 

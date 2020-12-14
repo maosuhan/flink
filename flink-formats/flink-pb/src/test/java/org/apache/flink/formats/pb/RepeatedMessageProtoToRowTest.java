@@ -7,9 +7,12 @@ import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.runtime.typeutils.InternalTypeInfo;
 import org.apache.flink.table.types.logical.RowType;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class RepeatedMessageProtoToRowTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+
+public class RepeatedMessageProtoToRowTest{
+	@Test
 	public void testRepeatedMessage() throws Exception {
 		RowType rowType = PbRowTypeInformation.generateRowType(RepeatedMessageTest.getDescriptor());
 		PbRowDeserializationSchema deserializationSchema = new PbRowDeserializationSchema(

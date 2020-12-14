@@ -8,11 +8,14 @@ import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.data.StringData;
 
 import com.google.protobuf.ByteString;
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import static org.apache.flink.formats.pb.ProtobufTestHelper.mapOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-public class RowToNullProtoBytesTest extends TestCase {
+public class RowToNullProtoBytesTest {
+	@Test
 	public void testSimple() throws Exception {
 		RowData row = GenericRowData.of(
 			//string
@@ -108,9 +111,9 @@ public class RowToNullProtoBytesTest extends TestCase {
 		assertEquals(1, nullTest.getLongArrayCount());
 		assertEquals(Long.valueOf(0L), nullTest.getLongArrayList().get(0));
 		assertEquals(1, nullTest.getFloatArrayCount());
-		assertEquals((float) 0, nullTest.getFloatArrayList().get(0));
+		assertEquals(Float.valueOf(0), nullTest.getFloatArrayList().get(0));
 		assertEquals(1, nullTest.getDoubleArrayCount());
-		assertEquals((double) 0, nullTest.getDoubleArrayList().get(0));
+		assertEquals(Double.valueOf(0), nullTest.getDoubleArrayList().get(0));
 		assertEquals(1, nullTest.getBooleanArrayCount());
 		assertEquals(Boolean.FALSE, nullTest.getBooleanArrayList().get(0));
 		assertEquals(1, nullTest.getEnumArrayCount());
