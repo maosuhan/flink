@@ -36,22 +36,16 @@ import java.util.Objects;
 
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
-
 @PublicEvolving
 public class PbRowDeserializationSchema implements DeserializationSchema<RowData> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PbRowDeserializationSchema.class);
 	private static final long serialVersionUID = -4040917522067315718L;
 
-
 	private final RowType rowType;
 	private final TypeInformation<RowData> resultTypeInfo;
 
 	private final String messageClassName;
-
-	/**
-	 * Flag indicating whether to ignore invalid fields/rows
-	 */
 	private final boolean ignoreParseErrors;
 	private final boolean readDefaultValues;
 

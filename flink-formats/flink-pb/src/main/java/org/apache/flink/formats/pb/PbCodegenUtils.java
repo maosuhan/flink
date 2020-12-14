@@ -18,11 +18,11 @@
 
 package org.apache.flink.formats.pb;
 
-import com.google.protobuf.Descriptors;
-
 import org.apache.flink.formats.pb.serialize.PbCodegenSerializeFactory;
 import org.apache.flink.formats.pb.serialize.PbCodegenSerializer;
 import org.apache.flink.table.types.logical.LogicalType;
+
+import com.google.protobuf.Descriptors;
 
 public class PbCodegenUtils {
 	public static String getContainerDataFieldGetterCodePhrase(

@@ -19,9 +19,9 @@
 package org.apache.flink.formats.pb.serialize;
 
 import org.apache.flink.api.common.serialization.SerializationSchema;
+import org.apache.flink.formats.pb.PbCodegenException;
 import org.apache.flink.formats.pb.PbFormatUtils;
 import org.apache.flink.formats.pb.PbSchemaValidator;
-import org.apache.flink.formats.pb.PbCodegenException;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.logical.RowType;
 import org.apache.flink.util.FlinkRuntimeException;
@@ -29,7 +29,6 @@ import org.apache.flink.util.FlinkRuntimeException;
 import com.google.protobuf.Descriptors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class PbRowSerializationSchema implements SerializationSchema<RowData> {
 
@@ -40,7 +39,6 @@ public class PbRowSerializationSchema implements SerializationSchema<RowData> {
 	private final String messageClassName;
 
 	private transient RowToProtoConverter rowToProtoConverter;
-
 
 	public PbRowSerializationSchema(RowType rowType, String messageClassName) {
 		this.rowType = rowType;

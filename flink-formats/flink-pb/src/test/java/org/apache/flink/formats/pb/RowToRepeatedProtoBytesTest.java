@@ -28,8 +28,6 @@ import org.apache.flink.table.types.logical.RowType;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
 public class RowToRepeatedProtoBytesTest {
 	@Test
 	public void testSimple() throws Exception {

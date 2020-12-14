@@ -18,11 +18,9 @@
 
 package org.apache.flink.formats.pb.serialize;
 
-import com.google.protobuf.ByteString;
-
 import org.apache.flink.formats.pb.PbCodegenAppender;
-import org.apache.flink.formats.pb.PbFormatUtils;
 import org.apache.flink.formats.pb.PbCodegenException;
+import org.apache.flink.formats.pb.PbFormatUtils;
 import org.apache.flink.formats.pb.deserialize.ProtoToRowConverter;
 import org.apache.flink.table.data.ArrayData;
 import org.apache.flink.table.data.RowData;
@@ -30,6 +28,7 @@ import org.apache.flink.table.data.StringData;
 import org.apache.flink.table.types.logical.RowType;
 
 import com.google.protobuf.AbstractMessage;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors;
 import org.codehaus.janino.ScriptEvaluator;
 import org.slf4j.Logger;

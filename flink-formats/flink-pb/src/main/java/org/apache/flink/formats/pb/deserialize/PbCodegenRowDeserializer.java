@@ -142,7 +142,7 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
 		if (fd.isRepeated()) {
 			return message + ".get" + fieldName + "Count() > 0";
 		} else {
-			// Proto3 syntax class do not have hasXXX interface.
+			//proto syntax class do not have hasName() interface
 			return message + ".has" + fieldName + "()";
 		}
 	}
