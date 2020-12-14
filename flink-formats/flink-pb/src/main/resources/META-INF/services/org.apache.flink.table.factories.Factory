@@ -1,3 +1,0 @@
-org.apache.flink.formats.pb.PbFormatFactory
-org.apache.flink.formats.pb.starter.SimpleProtobufTableSourceFactory
-org.apache.flink.formats.pb.starter.SimpleProtobufTableSinkFactory
