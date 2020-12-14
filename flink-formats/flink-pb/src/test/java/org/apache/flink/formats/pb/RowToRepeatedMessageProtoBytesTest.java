@@ -8,9 +8,12 @@ import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.logical.RowType;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class RowToRepeatedMessageProtoBytesTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+
+public class RowToRepeatedMessageProtoBytesTest{
+	@Test
 	public void testRepeatedMessage() throws Exception {
 		RowData subRow = GenericRowData.of(1, 2L);
 		RowData subRow2 = GenericRowData.of(3, 4L);

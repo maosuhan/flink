@@ -7,9 +7,14 @@ import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.data.StringData;
 import org.apache.flink.table.types.logical.RowType;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class RowToSimpleProtoBytesTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class RowToSimpleProtoBytesTest {
+	@Test
 	public void testSimple() throws Exception {
 		RowData row = GenericRowData.of(
 			1,
@@ -41,6 +46,7 @@ public class RowToSimpleProtoBytesTest extends TestCase {
 		assertEquals(SimpleTest.Corpus.IMAGES, simpleTest.getH());
 	}
 
+	@Test
 	public void testNull() throws Exception {
 		RowData row = GenericRowData.of(
 			null,

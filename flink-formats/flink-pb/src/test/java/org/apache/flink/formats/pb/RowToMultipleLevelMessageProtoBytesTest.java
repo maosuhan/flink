@@ -6,9 +6,13 @@ import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.logical.RowType;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class RowToMultipleLevelMessageProtoBytesTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+public class RowToMultipleLevelMessageProtoBytesTest {
+	@Test
 	public void testMultipleLevelMessage() throws Exception {
 		RowData subSubRow = GenericRowData.of(1, 2L);
 		RowData subRow = GenericRowData.of(subSubRow, false);
@@ -31,6 +35,7 @@ public class RowToMultipleLevelMessageProtoBytesTest extends TestCase {
 		assertEquals(1, test.getA());
 	}
 
+	@Test
 	public void testNull() throws Exception {
 		RowData row = GenericRowData.of(1, 2L, false, null);
 		byte[] bytes = ProtobufTestHelper.rowToPbBytes(row, MultipleLevelMessageTest.class);

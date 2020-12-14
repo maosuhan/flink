@@ -9,9 +9,13 @@ import org.apache.flink.table.runtime.typeutils.InternalTypeInfo;
 import org.apache.flink.table.types.logical.RowType;
 
 import com.google.protobuf.ByteString;
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class Pb3ToRowTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+public class Pb3ToRowTest{
+	@Test
 	public void testMessage() throws Exception {
 		RowType rowType = PbRowTypeInformation.generateRowType(Pb3Test.getDescriptor());
 		PbRowDeserializationSchema deserializationSchema = new PbRowDeserializationSchema(
@@ -72,6 +76,7 @@ public class Pb3ToRowTest extends TestCase {
 		assertEquals(2L, rowData.getLong(1));
 	}
 
+	@Test
 	public void testDefaultValues() throws Exception {
 		RowType rowType = PbRowTypeInformation.generateRowType(Pb3Test.getDescriptor());
 		PbRowDeserializationSchema deserializationSchema = new PbRowDeserializationSchema(

@@ -4,9 +4,13 @@ import org.apache.flink.formats.pb.testproto.OneofTest;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class RowToOneofProtoBytesTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+public class RowToOneofProtoBytesTest {
+	@Test
 	public void testSimple() throws Exception {
 		RowData row = GenericRowData.of(1, 2);
 

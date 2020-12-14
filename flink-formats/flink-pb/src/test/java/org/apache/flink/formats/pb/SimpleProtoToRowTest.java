@@ -7,9 +7,14 @@ import org.apache.flink.table.runtime.typeutils.InternalTypeInfo;
 import org.apache.flink.table.types.logical.RowType;
 
 import com.google.protobuf.ByteString;
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class SimpleProtoToRowTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class SimpleProtoToRowTest {
+	@Test
 	public void testSimple() throws Exception {
 		RowType rowType = PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor());
 		PbRowDeserializationSchema deserializationSchema = new PbRowDeserializationSchema(
@@ -46,6 +51,7 @@ public class SimpleProtoToRowTest extends TestCase {
 		assertEquals("IMAGES", row.getString(7).toString());
 	}
 
+	@Test
 	public void testNotExistsValueIgnoringDefault() throws Exception {
 		RowType rowType = PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor());
 		PbRowDeserializationSchema deserializationSchema = new PbRowDeserializationSchema(
@@ -70,6 +76,7 @@ public class SimpleProtoToRowTest extends TestCase {
 		assertFalse(row.isNullAt(1));
 	}
 
+	@Test
 	public void testDefaultValues() throws Exception {
 		RowType rowType = PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor());
 		PbRowDeserializationSchema deserializationSchema = new PbRowDeserializationSchema(

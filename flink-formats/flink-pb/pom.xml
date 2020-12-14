@@ -37,7 +37,7 @@ under the License.
 
 	<properties>
 		<janino.version>3.0.11</janino.version>
-		<pb.version>3.12.2</pb.version>
+		<protobuf.version>3.12.2</protobuf.version>
 	</properties>
 
 	<dependencies>
@@ -58,15 +58,9 @@ under the License.
 		</dependency>
 
 		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-			<version>${scala.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
-			<version>${pb.version}</version>
+			<version>${protobuf.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.janino</groupId>

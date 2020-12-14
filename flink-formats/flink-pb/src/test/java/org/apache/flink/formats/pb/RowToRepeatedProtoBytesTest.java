@@ -8,9 +8,12 @@ import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.data.StringData;
 import org.apache.flink.table.types.logical.RowType;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class RowToRepeatedProtoBytesTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+
+public class RowToRepeatedProtoBytesTest {
+	@Test
 	public void testSimple() throws Exception {
 		RowData row = GenericRowData.of(
 			1,
@@ -35,6 +38,7 @@ public class RowToRepeatedProtoBytesTest extends TestCase {
 		assertEquals(3L, repeatedTest.getB(2));
 	}
 
+	@Test
 	public void testEmptyArray() throws Exception {
 		RowData row = GenericRowData.of(
 			1,
@@ -56,6 +60,7 @@ public class RowToRepeatedProtoBytesTest extends TestCase {
 		assertEquals(0, repeatedTest.getBCount());
 	}
 
+	@Test
 	public void testNull() throws Exception {
 		RowData row = GenericRowData.of(1, null, false, 0.1f, 0.01, StringData.fromString("hello"));
 		byte[] bytes = ProtobufTestHelper.rowToPbBytes(row, RepeatedTest.class);
