@@ -18,8 +18,8 @@
 
 package org.apache.flink.formats.pb.serialize;
 
-import org.apache.flink.formats.pb.PbFormatUtils;
 import org.apache.flink.formats.pb.PbCodegenException;
+import org.apache.flink.formats.pb.PbFormatUtils;
 import org.apache.flink.table.types.logical.ArrayType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.MapType;

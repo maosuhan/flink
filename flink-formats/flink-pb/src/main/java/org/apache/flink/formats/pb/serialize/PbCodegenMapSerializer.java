@@ -19,10 +19,10 @@
 package org.apache.flink.formats.pb.serialize;
 
 import org.apache.flink.formats.pb.PbCodegenAppender;
+import org.apache.flink.formats.pb.PbCodegenException;
 import org.apache.flink.formats.pb.PbCodegenUtils;
 import org.apache.flink.formats.pb.PbCodegenVarId;
 import org.apache.flink.formats.pb.PbConstant;
-import org.apache.flink.formats.pb.PbCodegenException;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.MapType;
 
