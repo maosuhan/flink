@@ -7,9 +7,13 @@ import org.apache.flink.table.runtime.typeutils.InternalTypeInfo;
 import org.apache.flink.table.types.logical.RowType;
 
 import com.google.protobuf.ByteString;
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class OuterMultiProtoToRowTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+public class OuterMultiProtoToRowTest{
+	@Test
 	public void testSimple() throws Exception {
 		RowType rowType = PbRowTypeInformation.generateRowType(SimpleTestOuterMulti.getDescriptor());
 		PbRowDeserializationSchema deserializationSchema = new PbRowDeserializationSchema(

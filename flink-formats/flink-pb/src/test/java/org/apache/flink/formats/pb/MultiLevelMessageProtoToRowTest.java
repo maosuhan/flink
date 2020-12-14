@@ -6,9 +6,13 @@ import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.runtime.typeutils.InternalTypeInfo;
 import org.apache.flink.table.types.logical.RowType;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class MultiLevelMessageProtoToRowTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+public class MultiLevelMessageProtoToRowTest{
+	@Test
 	public void testMessage() throws Exception {
 		RowType rowType = PbRowTypeInformation.generateRowType(MultipleLevelMessageTest.getDescriptor());
 		PbRowDeserializationSchema deserializationSchema = new PbRowDeserializationSchema(
