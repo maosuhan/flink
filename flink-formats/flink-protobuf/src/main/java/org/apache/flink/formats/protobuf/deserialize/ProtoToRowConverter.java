@@ -28,6 +28,7 @@ import org.apache.flink.table.data.GenericMapData;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.data.StringData;
+import org.apache.flink.table.data.binary.BinaryStringData;
 import org.apache.flink.table.types.logical.RowType;
 
 import com.google.protobuf.Descriptors;
@@ -63,7 +64,7 @@ public class ProtoToRowConverter {
 			se.setDefaultImports(
 				RowData.class.getName(),
 				ArrayData.class.getName(),
-				StringData.class.getName(),
+				BinaryStringData.class.getName(),
 				GenericRowData.class.getName(),
 				GenericMapData.class.getName(),
 				GenericArrayData.class.getName(),
