@@ -45,7 +45,8 @@ public class PbCodegenSimpleDeserializer implements PbCodegenDeserializer {
 			case STRING:
 			case ENUM:
 				sb.append(
-					returnVarName + " = StringData.fromString(" + messageGetStr + ".toString());");
+					returnVarName + " = BinaryStringData.fromString(" + messageGetStr
+						+ ".toString());");
 				break;
 		}
 		return sb.toString();
