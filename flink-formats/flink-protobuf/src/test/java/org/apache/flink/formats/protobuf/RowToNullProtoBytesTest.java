@@ -61,23 +61,23 @@ public class RowToNullProtoBytesTest {
                         // bytes
                         new GenericMapData(mapOf(StringData.fromString("key"), null)),
                         // string
-                        new GenericArrayData(new Object[]{null}),
+                        new GenericArrayData(new Object[] {null}),
                         // int
-                        new GenericArrayData(new Object[]{null}),
+                        new GenericArrayData(new Object[] {null}),
                         // long
-                        new GenericArrayData(new Object[]{null}),
+                        new GenericArrayData(new Object[] {null}),
                         // boolean
-                        new GenericArrayData(new Object[]{null}),
+                        new GenericArrayData(new Object[] {null}),
                         // float
-                        new GenericArrayData(new Object[]{null}),
+                        new GenericArrayData(new Object[] {null}),
                         // double
-                        new GenericArrayData(new Object[]{null}),
+                        new GenericArrayData(new Object[] {null}),
                         // enum
-                        new GenericArrayData(new Object[]{null}),
+                        new GenericArrayData(new Object[] {null}),
                         // message, cannot be null
-                        new GenericArrayData(new Object[]{null}),
+                        new GenericArrayData(new Object[] {null}),
                         // bytes, cannot be null
-                        new GenericArrayData(new Object[]{null}));
+                        new GenericArrayData(new Object[] {null}));
         byte[] bytes = ProtobufTestHelper.rowToPbBytesWithoutValidation(row, NullTest.class);
         NullTest nullTest = NullTest.parseFrom(bytes);
         // string map
