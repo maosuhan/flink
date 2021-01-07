@@ -27,7 +27,6 @@ import org.apache.flink.table.data.GenericArrayData;
 import org.apache.flink.table.data.GenericMapData;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
-import org.apache.flink.table.data.StringData;
 import org.apache.flink.table.data.binary.BinaryStringData;
 import org.apache.flink.table.types.logical.RowType;
 
@@ -44,57 +43,54 @@ import java.util.List;
 import java.util.Map;
 
 public class ProtoToRowConverter {
-	private static final Logger LOG = LoggerFactory.getLogger(ProtoToRowConverter.class);
-	private ScriptEvaluator se;
-	private Method parseFromMethod;
+    private static final Logger LOG = LoggerFactory.getLogger(ProtoToRowConverter.class);
+    private ScriptEvaluator se;
+    private Method parseFromMethod;
 
-	public ProtoToRowConverter(
-		String messageClassName,
-		RowType rowType,
-		boolean readDefaultValues) throws PbCodegenException {
-		try {
-			Descriptors.Descriptor descriptor = PbFormatUtils.getDescriptor(messageClassName);
-			Class<?> messageClass = Class.forName(messageClassName);
-			if (descriptor.getFile().getSyntax() == Syntax.PROTO3) {
-				readDefaultValues = true;
-			}
-			se = new ScriptEvaluator();
-			se.setParameters(new String[]{"message"}, new Class[]{messageClass});
-			se.setReturnType(RowData.class);
-			se.setDefaultImports(
-				RowData.class.getName(),
-				ArrayData.class.getName(),
-				BinaryStringData.class.getName(),
-				GenericRowData.class.getName(),
-				GenericMapData.class.getName(),
-				GenericArrayData.class.getName(),
-				ArrayList.class.getName(),
-				List.class.getName(),
-				Map.class.getName(),
-				HashMap.class.getName());
+    public ProtoToRowConverter(String messageClassName, RowType rowType, boolean readDefaultValues)
+            throws PbCodegenException {
+        try {
+            Descriptors.Descriptor descriptor = PbFormatUtils.getDescriptor(messageClassName);
+            Class<?> messageClass = Class.forName(messageClassName);
+            if (descriptor.getFile().getSyntax() == Syntax.PROTO3) {
+                readDefaultValues = true;
+            }
+            se = new ScriptEvaluator();
+            se.setParameters(new String[] {"message"}, new Class[] {messageClass});
+            se.setReturnType(RowData.class);
+            se.setDefaultImports(
+                    RowData.class.getName(),
+                    ArrayData.class.getName(),
+                    BinaryStringData.class.getName(),
+                    GenericRowData.class.getName(),
+                    GenericMapData.class.getName(),
+                    GenericArrayData.class.getName(),
+                    ArrayList.class.getName(),
+                    List.class.getName(),
+                    Map.class.getName(),
+                    HashMap.class.getName());
 
-			PbCodegenAppender codegenAppender = new PbCodegenAppender();
-			codegenAppender.appendLine("RowData rowData=null");
-			PbCodegenDeserializer codegenDes = PbCodegenDeserializeFactory.getPbCodegenTopRowDes(
-				descriptor,
-				rowType,
-				readDefaultValues);
-			String genCode = codegenDes.codegen("rowData", "message");
-			codegenAppender.appendSegment(genCode);
-			codegenAppender.appendLine("return rowData");
+            PbCodegenAppender codegenAppender = new PbCodegenAppender();
+            codegenAppender.appendLine("RowData rowData=null");
+            PbCodegenDeserializer codegenDes =
+                    PbCodegenDeserializeFactory.getPbCodegenTopRowDes(
+                            descriptor, rowType, readDefaultValues);
+            String genCode = codegenDes.codegen("rowData", "message");
+            codegenAppender.appendSegment(genCode);
+            codegenAppender.appendLine("return rowData");
 
-			String printCode = codegenAppender.printWithLineNumber();
-			LOG.debug("Protobuf decode codegen: \n" + printCode);
+            String printCode = codegenAppender.printWithLineNumber();
+            LOG.debug("Protobuf decode codegen: \n" + printCode);
 
-			se.cook(codegenAppender.code());
-			parseFromMethod = messageClass.getMethod(PbConstant.PB_METHOD_PARSE_FROM, byte[].class);
-		} catch (Exception ex) {
-			throw new PbCodegenException(ex);
-		}
-	}
+            se.cook(codegenAppender.code());
+            parseFromMethod = messageClass.getMethod(PbConstant.PB_METHOD_PARSE_FROM, byte[].class);
+        } catch (Exception ex) {
+            throw new PbCodegenException(ex);
+        }
+    }
 
-	public RowData convertProtoBinaryToRow(byte[] data) throws Exception {
-		Object messageObj = parseFromMethod.invoke(null, data);
-		return (RowData) se.evaluate(new Object[]{messageObj});
-	}
+    public RowData convertProtoBinaryToRow(byte[] data) throws Exception {
+        Object messageObj = parseFromMethod.invoke(null, data);
+        return (RowData) se.evaluate(new Object[] {messageObj});
+    }
 }

@@ -35,46 +35,43 @@ import java.util.Set;
 
 public class PbFormatFactory implements DeserializationFormatFactory, SerializationFormatFactory {
 
-	public static final String IDENTIFIER = "protobuf";
+    public static final String IDENTIFIER = "protobuf";
 
-	@Override
-	public DecodingFormat<DeserializationSchema<RowData>> createDecodingFormat(
-		DynamicTableFactory.Context context,
-		ReadableConfig formatOptions) {
-		FactoryUtil.validateFactoryOptions(this, formatOptions);
-		final String messageClassName = formatOptions.get(PbFormatOptions.MESSAGE_CLASS_NAME);
-		boolean ignoreParseErrors = formatOptions.get(PbFormatOptions.IGNORE_PARSE_ERRORS);
-		boolean readDefaultValues = formatOptions.get(PbFormatOptions.READ_DEFAULT_VALUES);
-		return new PbDecodingFormat(messageClassName, ignoreParseErrors, readDefaultValues);
-	}
+    @Override
+    public DecodingFormat<DeserializationSchema<RowData>> createDecodingFormat(
+            DynamicTableFactory.Context context, ReadableConfig formatOptions) {
+        FactoryUtil.validateFactoryOptions(this, formatOptions);
+        final String messageClassName = formatOptions.get(PbFormatOptions.MESSAGE_CLASS_NAME);
+        boolean ignoreParseErrors = formatOptions.get(PbFormatOptions.IGNORE_PARSE_ERRORS);
+        boolean readDefaultValues = formatOptions.get(PbFormatOptions.READ_DEFAULT_VALUES);
+        return new PbDecodingFormat(messageClassName, ignoreParseErrors, readDefaultValues);
+    }
 
-	@Override
-	public EncodingFormat<SerializationSchema<RowData>> createEncodingFormat(
-		DynamicTableFactory.Context context,
-		ReadableConfig formatOptions) {
-		FactoryUtil.validateFactoryOptions(this, formatOptions);
-		final String messageClassName = formatOptions.get(PbFormatOptions.MESSAGE_CLASS_NAME);
-		return new PbEncodingFormat(messageClassName);
-	}
+    @Override
+    public EncodingFormat<SerializationSchema<RowData>> createEncodingFormat(
+            DynamicTableFactory.Context context, ReadableConfig formatOptions) {
+        FactoryUtil.validateFactoryOptions(this, formatOptions);
+        final String messageClassName = formatOptions.get(PbFormatOptions.MESSAGE_CLASS_NAME);
+        return new PbEncodingFormat(messageClassName);
+    }
 
-	@Override
-	public String factoryIdentifier() {
-		return IDENTIFIER;
-	}
+    @Override
+    public String factoryIdentifier() {
+        return IDENTIFIER;
+    }
 
-	@Override
-	public Set<ConfigOption<?>> requiredOptions() {
-		Set<ConfigOption<?>> result = new HashSet<>();
-		result.add(PbFormatOptions.MESSAGE_CLASS_NAME);
-		return result;
-	}
+    @Override
+    public Set<ConfigOption<?>> requiredOptions() {
+        Set<ConfigOption<?>> result = new HashSet<>();
+        result.add(PbFormatOptions.MESSAGE_CLASS_NAME);
+        return result;
+    }
 
-	@Override
-	public Set<ConfigOption<?>> optionalOptions() {
-		Set<ConfigOption<?>> result = new HashSet<>();
-		result.add(PbFormatOptions.IGNORE_PARSE_ERRORS);
-		result.add(PbFormatOptions.READ_DEFAULT_VALUES);
-		return result;
-	}
-
+    @Override
+    public Set<ConfigOption<?>> optionalOptions() {
+        Set<ConfigOption<?>> result = new HashSet<>();
+        result.add(PbFormatOptions.IGNORE_PARSE_ERRORS);
+        result.add(PbFormatOptions.READ_DEFAULT_VALUES);
+        return result;
+    }
 }

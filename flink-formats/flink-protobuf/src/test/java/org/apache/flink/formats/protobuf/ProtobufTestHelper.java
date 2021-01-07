@@ -41,59 +41,61 @@ import java.util.Map;
 import static org.apache.flink.table.types.utils.TypeConversions.fromLogicalToDataType;
 
 public class ProtobufTestHelper {
-	public static RowData validateRow(RowData rowData, RowType rowType) throws Exception {
-		StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironment();
-		StreamTableEnvironment tableEnv = StreamTableEnvironment.create(
-			env,
-			EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build());
+    public static RowData validateRow(RowData rowData, RowType rowType) throws Exception {
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironment();
+        StreamTableEnvironment tableEnv =
+                StreamTableEnvironment.create(
+                        env,
+                        EnvironmentSettings.newInstance()
+                                .useBlinkPlanner()
+                                .inStreamingMode()
+                                .build());
 
-		DataType rowDataType = fromLogicalToDataType(rowType);
-		Row row = (Row) DataFormatConverters.getConverterForDataType(rowDataType)
-			.toExternal(rowData);
-		TypeInformation<Row> rowTypeInfo = (TypeInformation<Row>) TypeConversions.fromDataTypeToLegacyInfo(
-			rowDataType);
-		DataStream<Row> rows = env.fromCollection(
-			Collections.singletonList(row),
-			rowTypeInfo);
+        DataType rowDataType = fromLogicalToDataType(rowType);
+        Row row =
+                (Row) DataFormatConverters.getConverterForDataType(rowDataType).toExternal(rowData);
+        TypeInformation<Row> rowTypeInfo =
+                (TypeInformation<Row>) TypeConversions.fromDataTypeToLegacyInfo(rowDataType);
+        DataStream<Row> rows = env.fromCollection(Collections.singletonList(row), rowTypeInfo);
 
-		Table table = tableEnv.fromDataStream(rows);
-		tableEnv.createTemporaryView("t", table);
-		table = tableEnv.sqlQuery("select * from t");
-		List<RowData> resultRows = tableEnv.toAppendStream(table, InternalTypeInfo.of(rowType))
-			.executeAndCollect(1);
-		return resultRows.get(0);
-	}
+        Table table = tableEnv.fromDataStream(rows);
+        tableEnv.createTemporaryView("t", table);
+        table = tableEnv.sqlQuery("select * from t");
+        List<RowData> resultRows =
+                tableEnv.toAppendStream(table, InternalTypeInfo.of(rowType)).executeAndCollect(1);
+        return resultRows.get(0);
+    }
 
-	public static byte[] rowToPbBytes(RowData row, Class messageClass) throws Exception {
-		RowType rowType = PbRowTypeInformation.generateRowType(org.apache.flink.formats.protobuf.PbFormatUtils
-			.getDescriptor(
-			messageClass.getName()));
-		row = validateRow(row, rowType);
-		PbRowSerializationSchema serializationSchema = new PbRowSerializationSchema(
-			rowType,
-			messageClass.getName());
-		byte[] bytes = serializationSchema.serialize(row);
-		return bytes;
-	}
+    public static byte[] rowToPbBytes(RowData row, Class messageClass) throws Exception {
+        RowType rowType =
+                PbRowTypeInformation.generateRowType(
+                        org.apache.flink.formats.protobuf.PbFormatUtils.getDescriptor(
+                                messageClass.getName()));
+        row = validateRow(row, rowType);
+        PbRowSerializationSchema serializationSchema =
+                new PbRowSerializationSchema(rowType, messageClass.getName());
+        byte[] bytes = serializationSchema.serialize(row);
+        return bytes;
+    }
 
-	public static byte[] rowToPbBytesWithoutValidation(RowData row, Class messageClass) throws Exception {
-		RowType rowType = PbRowTypeInformation.generateRowType(PbFormatUtils.getDescriptor(
-			messageClass.getName()));
-		PbRowSerializationSchema serializationSchema = new PbRowSerializationSchema(
-			rowType,
-			messageClass.getName());
-		byte[] bytes = serializationSchema.serialize(row);
-		return bytes;
-	}
+    public static byte[] rowToPbBytesWithoutValidation(RowData row, Class messageClass)
+            throws Exception {
+        RowType rowType =
+                PbRowTypeInformation.generateRowType(
+                        PbFormatUtils.getDescriptor(messageClass.getName()));
+        PbRowSerializationSchema serializationSchema =
+                new PbRowSerializationSchema(rowType, messageClass.getName());
+        byte[] bytes = serializationSchema.serialize(row);
+        return bytes;
+    }
 
-	public static <K, V> Map<K, V> mapOf(Object... keyValues) {
-		Map<K, V> map = new HashMap<>();
+    public static <K, V> Map<K, V> mapOf(Object... keyValues) {
+        Map<K, V> map = new HashMap<>();
 
-		for (int index = 0; index < keyValues.length / 2; index++) {
-			map.put((K) keyValues[index * 2], (V) keyValues[index * 2 + 1]);
-		}
+        for (int index = 0; index < keyValues.length / 2; index++) {
+            map.put((K) keyValues[index * 2], (V) keyValues[index * 2 + 1]);
+        }
 
-		return map;
-	}
-
+        return map;
+    }
 }

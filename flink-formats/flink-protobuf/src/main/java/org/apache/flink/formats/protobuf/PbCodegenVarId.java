@@ -21,17 +21,16 @@ package org.apache.flink.formats.protobuf;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PbCodegenVarId {
-	private static PbCodegenVarId varUid = new PbCodegenVarId();
-	private AtomicInteger atomicInteger = new AtomicInteger();
+    private static PbCodegenVarId varUid = new PbCodegenVarId();
+    private AtomicInteger atomicInteger = new AtomicInteger();
 
-	private PbCodegenVarId() {
-	}
+    private PbCodegenVarId() {}
 
-	public static PbCodegenVarId getInstance() {
-		return varUid;
-	}
+    public static PbCodegenVarId getInstance() {
+        return varUid;
+    }
 
-	public int getAndIncrement() {
-		return atomicInteger.getAndIncrement();
-	}
+    public int getAndIncrement() {
+        return atomicInteger.getAndIncrement();
+    }
 }

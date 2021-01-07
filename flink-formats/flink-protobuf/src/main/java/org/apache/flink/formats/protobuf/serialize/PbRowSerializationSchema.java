@@ -32,41 +32,37 @@ import org.slf4j.LoggerFactory;
 
 public class PbRowSerializationSchema implements SerializationSchema<RowData> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PbRowSerializationSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PbRowSerializationSchema.class);
 
-	private final RowType rowType;
+    private final RowType rowType;
 
-	private final String messageClassName;
+    private final String messageClassName;
 
-	private transient RowToProtoConverter rowToProtoConverter;
+    private transient RowToProtoConverter rowToProtoConverter;
 
-	public PbRowSerializationSchema(RowType rowType, String messageClassName) {
-		this.rowType = rowType;
-		this.messageClassName = messageClassName;
-		Descriptors.Descriptor descriptor = PbFormatUtils.getDescriptor(messageClassName);
-		new PbSchemaValidator(descriptor, rowType).validate();
-		try {
-			rowToProtoConverter = new RowToProtoConverter(
-				messageClassName,
-				rowType);
-		} catch (PbCodegenException e) {
-			throw new FlinkRuntimeException(e);
-		}
-	}
+    public PbRowSerializationSchema(RowType rowType, String messageClassName) {
+        this.rowType = rowType;
+        this.messageClassName = messageClassName;
+        Descriptors.Descriptor descriptor = PbFormatUtils.getDescriptor(messageClassName);
+        new PbSchemaValidator(descriptor, rowType).validate();
+        try {
+            rowToProtoConverter = new RowToProtoConverter(messageClassName, rowType);
+        } catch (PbCodegenException e) {
+            throw new FlinkRuntimeException(e);
+        }
+    }
 
-	@Override
-	public void open(InitializationContext context) throws Exception {
-		rowToProtoConverter = new RowToProtoConverter(
-			messageClassName,
-			rowType);
-	}
+    @Override
+    public void open(InitializationContext context) throws Exception {
+        rowToProtoConverter = new RowToProtoConverter(messageClassName, rowType);
+    }
 
-	@Override
-	public byte[] serialize(RowData element) {
-		try {
-			return rowToProtoConverter.convertRowToProtoBinary(element);
-		} catch (Exception e) {
-			throw new FlinkRuntimeException(e);
-		}
-	}
+    @Override
+    public byte[] serialize(RowData element) {
+        try {
+            return rowToProtoConverter.convertRowToProtoBinary(element);
+        } catch (Exception e) {
+            throw new FlinkRuntimeException(e);
+        }
+    }
 }
