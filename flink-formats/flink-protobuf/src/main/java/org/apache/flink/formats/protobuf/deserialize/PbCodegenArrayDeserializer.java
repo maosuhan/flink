@@ -45,6 +45,8 @@ public class PbCodegenArrayDeserializer implements PbCodegenDeserializer {
 	public String codegen(
 		String returnVarName,
 		String messageGetStr) throws PbCodegenException {
+		// The type of messageGetStr is a native List object,
+		// it should be converted to ArrayData of flink internal type
 		PbCodegenVarId varUid = PbCodegenVarId.getInstance();
 		int uid = varUid.getAndIncrement();
 		String protoTypeStr = PbCodegenUtils.getTypeStrFromProto(fd, false);

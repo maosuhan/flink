@@ -46,6 +46,8 @@ public class PbCodegenMapDeserializer implements PbCodegenDeserializer {
 	public String codegen(
 		String returnVarName,
 		String messageGetStr) throws PbCodegenException {
+		// The type of messageGetStr is a native Map object,
+		// it should be converted to MapData of flink internal type
 		PbCodegenVarId varUid = PbCodegenVarId.getInstance();
 		int uid = varUid.getAndIncrement();
 

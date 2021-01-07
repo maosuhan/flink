@@ -32,6 +32,8 @@ public class PbCodegenDeserializeFactory {
 		Descriptors.FieldDescriptor fd,
 		LogicalType type,
 		boolean readDefaultValues) throws PbCodegenException {
+		// We do not use FieldDescriptor to check because when FieldDescriptor is an element type in array,
+		// FieldDescriptor.isRepeated() is still true
 		if (type instanceof RowType) {
 			return new PbCodegenRowDeserializer(fd.getMessageType(), (RowType) type,
 				readDefaultValues);

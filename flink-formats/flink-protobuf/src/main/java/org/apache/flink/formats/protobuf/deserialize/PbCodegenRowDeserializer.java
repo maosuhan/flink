@@ -50,6 +50,8 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
 	public String codegen(
 		String returnVarName,
 		String messageGetStr) throws PbCodegenException {
+		// The type of messageGetStr is a native pb object,
+		// it should be converted to RowData of flink internal type
 		PbCodegenVarId varUid = PbCodegenVarId.getInstance();
 		int uid = varUid.getAndIncrement();
 		String pbMessageVar = "message" + uid;

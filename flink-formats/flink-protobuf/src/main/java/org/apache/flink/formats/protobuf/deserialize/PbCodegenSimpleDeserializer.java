@@ -30,6 +30,8 @@ public class PbCodegenSimpleDeserializer implements PbCodegenDeserializer {
 
 	@Override
 	public String codegen(String returnVarName, String messageGetStr) {
+		// the type of messageGetStr must not be primitive type,
+		// it should convert to internal flink row type like StringData.
 		StringBuilder sb = new StringBuilder();
 		switch (fd.getJavaType()) {
 			case INT:
