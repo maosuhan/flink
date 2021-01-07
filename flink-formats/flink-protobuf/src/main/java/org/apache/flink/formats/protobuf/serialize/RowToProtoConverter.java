@@ -40,54 +40,50 @@ import java.util.List;
 import java.util.Map;
 
 public class RowToProtoConverter {
-	private static final Logger LOG = LoggerFactory.getLogger(ProtoToRowConverter.class);
-	private ScriptEvaluator se;
+    private static final Logger LOG = LoggerFactory.getLogger(ProtoToRowConverter.class);
+    private ScriptEvaluator se;
 
-	public RowToProtoConverter(
-		String messageClassName,
-		RowType rowType) throws PbCodegenException {
-		try {
-			Descriptors.Descriptor descriptor = PbFormatUtils.getDescriptor(messageClassName);
-			se = new ScriptEvaluator();
-			se.setParameters(new String[]{"rowData"}, new Class[]{RowData.class});
-			se.setReturnType(AbstractMessage.class);
-			se.setDefaultImports(
-				//pb
-				AbstractMessage.class.getName(),
-				Descriptors.class.getName(),
-				//flink row
-				RowData.class.getName(),
-				ArrayData.class.getName(),
-				StringData.class.getName(),
-				ByteString.class.getName(),
-				//java common
-				List.class.getName(),
-				ArrayList.class.getName(),
-				Map.class.getName(),
-				HashMap.class.getName()
-			);
+    public RowToProtoConverter(String messageClassName, RowType rowType) throws PbCodegenException {
+        try {
+            Descriptors.Descriptor descriptor = PbFormatUtils.getDescriptor(messageClassName);
+            se = new ScriptEvaluator();
+            se.setParameters(new String[] {"rowData"}, new Class[] {RowData.class});
+            se.setReturnType(AbstractMessage.class);
+            se.setDefaultImports(
+                    // pb
+                    AbstractMessage.class.getName(),
+                    Descriptors.class.getName(),
+                    // flink row
+                    RowData.class.getName(),
+                    ArrayData.class.getName(),
+                    StringData.class.getName(),
+                    ByteString.class.getName(),
+                    // java common
+                    List.class.getName(),
+                    ArrayList.class.getName(),
+                    Map.class.getName(),
+                    HashMap.class.getName());
 
-			StringBuilder sb = new StringBuilder();
-			sb.append("AbstractMessage message = null;\n");
-			PbCodegenSerializer codegenSer = PbCodegenSerializeFactory.getPbCodegenTopRowSer(
-				descriptor,
-				rowType);
-			String genCode = codegenSer.codegen("message", "rowData");
-			sb.append(genCode);
-			sb.append("return message;\n");
-			String code = sb.toString();
+            StringBuilder sb = new StringBuilder();
+            sb.append("AbstractMessage message = null;\n");
+            PbCodegenSerializer codegenSer =
+                    PbCodegenSerializeFactory.getPbCodegenTopRowSer(descriptor, rowType);
+            String genCode = codegenSer.codegen("message", "rowData");
+            sb.append(genCode);
+            sb.append("return message;\n");
+            String code = sb.toString();
 
-			String printCode = PbCodegenAppender.printWithLineNumber(code);
-			LOG.debug("Protobuf decode codegen: \n" + printCode);
+            String printCode = PbCodegenAppender.printWithLineNumber(code);
+            LOG.debug("Protobuf decode codegen: \n" + printCode);
 
-			se.cook(code);
-		} catch (Exception ex) {
-			throw new PbCodegenException(ex);
-		}
-	}
+            se.cook(code);
+        } catch (Exception ex) {
+            throw new PbCodegenException(ex);
+        }
+    }
 
-	public byte[] convertRowToProtoBinary(RowData rowData) throws Exception {
-		AbstractMessage message = (AbstractMessage) se.evaluate(new Object[]{rowData});
-		return message.toByteArray();
-	}
+    public byte[] convertRowToProtoBinary(RowData rowData) throws Exception {
+        AbstractMessage message = (AbstractMessage) se.evaluate(new Object[] {rowData});
+        return message.toByteArray();
+    }
 }

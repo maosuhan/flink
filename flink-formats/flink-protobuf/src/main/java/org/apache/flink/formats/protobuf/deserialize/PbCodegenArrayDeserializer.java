@@ -27,56 +27,55 @@ import org.apache.flink.table.types.logical.LogicalType;
 import com.google.protobuf.Descriptors;
 
 public class PbCodegenArrayDeserializer implements PbCodegenDeserializer {
-	private Descriptors.FieldDescriptor fd;
-	private LogicalType elementType;
-	private boolean readDefaultValues;
-	private PbCodegenAppender appender = new PbCodegenAppender();
+    private Descriptors.FieldDescriptor fd;
+    private LogicalType elementType;
+    private boolean readDefaultValues;
+    private PbCodegenAppender appender = new PbCodegenAppender();
 
-	public PbCodegenArrayDeserializer(
-		Descriptors.FieldDescriptor fd,
-		LogicalType elementType,
-		boolean readDefaultValues) {
-		this.fd = fd;
-		this.elementType = elementType;
-		this.readDefaultValues = readDefaultValues;
-	}
+    public PbCodegenArrayDeserializer(
+            Descriptors.FieldDescriptor fd, LogicalType elementType, boolean readDefaultValues) {
+        this.fd = fd;
+        this.elementType = elementType;
+        this.readDefaultValues = readDefaultValues;
+    }
 
-	@Override
-	public String codegen(
-		String returnVarName,
-		String messageGetStr) throws PbCodegenException {
-		// The type of messageGetStr is a native List object,
-		// it should be converted to ArrayData of flink internal type
-		PbCodegenVarId varUid = PbCodegenVarId.getInstance();
-		int uid = varUid.getAndIncrement();
-		String protoTypeStr = PbCodegenUtils.getTypeStrFromProto(fd, false);
-		String listPbVar = "list" + uid;
-		String newArrDataVar = "newArr" + uid;
-		String subReturnDataVar = "subReturnVar" + uid;
-		String iVar = "i" + uid;
-		String subPbObjVar = "subObj" + uid;
+    @Override
+    public String codegen(String returnVarName, String messageGetStr) throws PbCodegenException {
+        // The type of messageGetStr is a native List object,
+        // it should be converted to ArrayData of flink internal type
+        PbCodegenVarId varUid = PbCodegenVarId.getInstance();
+        int uid = varUid.getAndIncrement();
+        String protoTypeStr = PbCodegenUtils.getTypeStrFromProto(fd, false);
+        String listPbVar = "list" + uid;
+        String newArrDataVar = "newArr" + uid;
+        String subReturnDataVar = "subReturnVar" + uid;
+        String iVar = "i" + uid;
+        String subPbObjVar = "subObj" + uid;
 
-		appender.appendLine(
-			"List<" + protoTypeStr + "> " + listPbVar + "=" + messageGetStr);
-		appender.appendLine("Object[] " + newArrDataVar + "= new " + "Object[" + listPbVar
-			+ ".size()]");
-		appender.appendRawLine(
-			"for(int " + iVar + "=0;" + iVar + " < " + listPbVar + ".size(); "
-				+ iVar + "++){");
-		appender.appendLine("Object " + subReturnDataVar + " = null");
-		appender.appendLine(
-			protoTypeStr + " " + subPbObjVar + " = (" + protoTypeStr + ")" + listPbVar + ".get("
-				+ iVar + ")");
-		PbCodegenDeserializer codegenDes = PbCodegenDeserializeFactory.getPbCodegenDes(
-			fd,
-			elementType,
-			readDefaultValues);
-		String code = codegenDes.codegen(subReturnDataVar, subPbObjVar);
-		appender.appendSegment(code);
-		appender.appendLine(newArrDataVar + "[" + iVar + "]=" + subReturnDataVar + "");
-		appender.appendRawLine("}");
-		appender.appendLine(returnVarName + " = new GenericArrayData(" + newArrDataVar + ")");
-		return appender.code();
-	}
-
+        appender.appendLine("List<" + protoTypeStr + "> " + listPbVar + "=" + messageGetStr);
+        appender.appendLine(
+                "Object[] " + newArrDataVar + "= new " + "Object[" + listPbVar + ".size()]");
+        appender.appendSegment(
+                "for(int " + iVar + "=0;" + iVar + " < " + listPbVar + ".size(); " + iVar + "++){");
+        appender.appendLine("Object " + subReturnDataVar + " = null");
+        appender.appendLine(
+                protoTypeStr
+                        + " "
+                        + subPbObjVar
+                        + " = ("
+                        + protoTypeStr
+                        + ")"
+                        + listPbVar
+                        + ".get("
+                        + iVar
+                        + ")");
+        PbCodegenDeserializer codegenDes =
+                PbCodegenDeserializeFactory.getPbCodegenDes(fd, elementType, readDefaultValues);
+        String code = codegenDes.codegen(subReturnDataVar, subPbObjVar);
+        appender.appendSegment(code);
+        appender.appendLine(newArrDataVar + "[" + iVar + "]=" + subReturnDataVar + "");
+        appender.appendSegment("}");
+        appender.appendLine(returnVarName + " = new GenericArrayData(" + newArrDataVar + ")");
+        return appender.code();
+    }
 }

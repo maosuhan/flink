@@ -28,22 +28,21 @@ import org.apache.flink.table.types.DataType;
 import org.apache.flink.table.types.logical.RowType;
 
 public class PbEncodingFormat implements EncodingFormat<SerializationSchema<RowData>> {
-	private String messageClassName;
+    private String messageClassName;
 
-	public PbEncodingFormat(String messageClassName) {
-		this.messageClassName = messageClassName;
-	}
+    public PbEncodingFormat(String messageClassName) {
+        this.messageClassName = messageClassName;
+    }
 
-	@Override
-	public ChangelogMode getChangelogMode() {
-		return ChangelogMode.insertOnly();
-	}
+    @Override
+    public ChangelogMode getChangelogMode() {
+        return ChangelogMode.insertOnly();
+    }
 
-	@Override
-	public SerializationSchema<RowData> createRuntimeEncoder(
-		DynamicTableSink.Context context,
-		DataType consumedDataType) {
-		RowType rowType = (RowType) consumedDataType.getLogicalType();
-		return new PbRowSerializationSchema(rowType, this.messageClassName);
-	}
+    @Override
+    public SerializationSchema<RowData> createRuntimeEncoder(
+            DynamicTableSink.Context context, DataType consumedDataType) {
+        RowType rowType = (RowType) consumedDataType.getLogicalType();
+        return new PbRowSerializationSchema(rowType, this.messageClassName);
+    }
 }

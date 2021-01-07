@@ -26,43 +26,41 @@ import org.apache.flink.table.types.logical.RowType;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class RowToMultipleLevelMessageProtoBytesTest {
-	@Test
-	public void testMultipleLevelMessage() throws Exception {
-		RowData subSubRow = GenericRowData.of(1, 2L);
-		RowData subRow = GenericRowData.of(subSubRow, false);
-		RowData row = GenericRowData.of(1, 2L, false, subRow);
+    @Test
+    public void testMultipleLevelMessage() throws Exception {
+        RowData subSubRow = GenericRowData.of(1, 2L);
+        RowData subRow = GenericRowData.of(subSubRow, false);
+        RowData row = GenericRowData.of(1, 2L, false, subRow);
 
-		RowType rowType = PbRowTypeInformation.generateRowType(MultipleLevelMessageTest.getDescriptor());
-		row = ProtobufTestHelper.validateRow(row, rowType);
+        RowType rowType =
+                PbRowTypeInformation.generateRowType(MultipleLevelMessageTest.getDescriptor());
+        row = ProtobufTestHelper.validateRow(row, rowType);
 
-		PbRowSerializationSchema serializationSchema = new PbRowSerializationSchema(
-			rowType,
-			MultipleLevelMessageTest.class.getName());
+        PbRowSerializationSchema serializationSchema =
+                new PbRowSerializationSchema(rowType, MultipleLevelMessageTest.class.getName());
 
-		byte[] bytes = serializationSchema.serialize(row);
+        byte[] bytes = serializationSchema.serialize(row);
 
-		MultipleLevelMessageTest test = MultipleLevelMessageTest.parseFrom(bytes);
+        MultipleLevelMessageTest test = MultipleLevelMessageTest.parseFrom(bytes);
 
-		assertFalse(test.getD().getC());
-		assertEquals(1, test.getD().getA().getA());
-		assertEquals(2L, test.getD().getA().getB());
-		assertEquals(1, test.getA());
-	}
+        assertFalse(test.getD().getC());
+        assertEquals(1, test.getD().getA().getA());
+        assertEquals(2L, test.getD().getA().getB());
+        assertEquals(1, test.getA());
+    }
 
-	@Test
-	public void testNull() throws Exception {
-		RowData row = GenericRowData.of(1, 2L, false, null);
-		byte[] bytes = ProtobufTestHelper.rowToPbBytes(row, MultipleLevelMessageTest.class);
+    @Test
+    public void testNull() throws Exception {
+        RowData row = GenericRowData.of(1, 2L, false, null);
+        byte[] bytes = ProtobufTestHelper.rowToPbBytes(row, MultipleLevelMessageTest.class);
 
-		MultipleLevelMessageTest test = MultipleLevelMessageTest.parseFrom(bytes);
+        MultipleLevelMessageTest test = MultipleLevelMessageTest.parseFrom(bytes);
 
-		MultipleLevelMessageTest.InnerMessageTest1 empty = MultipleLevelMessageTest.InnerMessageTest1
-			.newBuilder()
-			.build();
-		assertEquals(empty, test.getD());
-	}
+        MultipleLevelMessageTest.InnerMessageTest1 empty =
+                MultipleLevelMessageTest.InnerMessageTest1.newBuilder().build();
+        assertEquals(empty, test.getD());
+    }
 }

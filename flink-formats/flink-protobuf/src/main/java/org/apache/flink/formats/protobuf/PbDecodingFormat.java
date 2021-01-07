@@ -29,36 +29,33 @@ import org.apache.flink.table.types.DataType;
 import org.apache.flink.table.types.logical.RowType;
 
 public class PbDecodingFormat implements DecodingFormat<DeserializationSchema<RowData>> {
-	private String messageClassName;
-	private boolean ignoreParseErrors;
-	private boolean readDefaultValues;
+    private String messageClassName;
+    private boolean ignoreParseErrors;
+    private boolean readDefaultValues;
 
-	public PbDecodingFormat(
-		String messageClassName,
-		boolean ignoreParseErrors,
-		boolean readDefaultValues) {
-		this.messageClassName = messageClassName;
-		this.ignoreParseErrors = ignoreParseErrors;
-		this.readDefaultValues = readDefaultValues;
-	}
+    public PbDecodingFormat(
+            String messageClassName, boolean ignoreParseErrors, boolean readDefaultValues) {
+        this.messageClassName = messageClassName;
+        this.ignoreParseErrors = ignoreParseErrors;
+        this.readDefaultValues = readDefaultValues;
+    }
 
-	@Override
-	public DeserializationSchema<RowData> createRuntimeDecoder(
-		DynamicTableSource.Context context,
-		DataType producedDataType) {
-		final RowType rowType = (RowType) producedDataType.getLogicalType();
-		final TypeInformation<RowData> rowDataTypeInfo = context.createTypeInformation(
-			producedDataType);
-		return new PbRowDeserializationSchema(
-			rowType,
-			rowDataTypeInfo,
-			this.messageClassName,
-			this.ignoreParseErrors,
-			this.readDefaultValues);
-	}
+    @Override
+    public DeserializationSchema<RowData> createRuntimeDecoder(
+            DynamicTableSource.Context context, DataType producedDataType) {
+        final RowType rowType = (RowType) producedDataType.getLogicalType();
+        final TypeInformation<RowData> rowDataTypeInfo =
+                context.createTypeInformation(producedDataType);
+        return new PbRowDeserializationSchema(
+                rowType,
+                rowDataTypeInfo,
+                this.messageClassName,
+                this.ignoreParseErrors,
+                this.readDefaultValues);
+    }
 
-	@Override
-	public ChangelogMode getChangelogMode() {
-		return ChangelogMode.insertOnly();
-	}
+    @Override
+    public ChangelogMode getChangelogMode() {
+        return ChangelogMode.insertOnly();
+    }
 }

@@ -26,15 +26,16 @@ import org.apache.flink.table.types.logical.RowType;
 import org.junit.Test;
 
 public class OuterNoMultiProtoToRowTest {
-	@Test(expected = IllegalArgumentException.class)
-	public void testSimple() {
-		RowType rowType = PbRowTypeInformation.generateRowType(SimpleTestOuterNomultiProto.SimpleTestOuterNomulti
-			.getDescriptor());
-		new PbRowDeserializationSchema(
-			rowType,
-			InternalTypeInfo.of(rowType),
-			SimpleTestOuterNomultiProto.SimpleTestOuterNomulti.class.getName(),
-			false,
-			false);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void testSimple() {
+        RowType rowType =
+                PbRowTypeInformation.generateRowType(
+                        SimpleTestOuterNomultiProto.SimpleTestOuterNomulti.getDescriptor());
+        new PbRowDeserializationSchema(
+                rowType,
+                InternalTypeInfo.of(rowType),
+                SimpleTestOuterNomultiProto.SimpleTestOuterNomulti.class.getName(),
+                false,
+                false);
+    }
 }

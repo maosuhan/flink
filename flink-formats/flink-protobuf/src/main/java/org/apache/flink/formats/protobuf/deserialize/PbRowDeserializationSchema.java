@@ -39,97 +39,88 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
 @PublicEvolving
 public class PbRowDeserializationSchema implements DeserializationSchema<RowData> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PbRowDeserializationSchema.class);
-	private static final long serialVersionUID = -4040917522067315718L;
+    private static final Logger LOG = LoggerFactory.getLogger(PbRowDeserializationSchema.class);
+    private static final long serialVersionUID = -4040917522067315718L;
 
-	private final RowType rowType;
-	private final TypeInformation<RowData> resultTypeInfo;
+    private final RowType rowType;
+    private final TypeInformation<RowData> resultTypeInfo;
 
-	private final String messageClassName;
-	private final boolean ignoreParseErrors;
-	private final boolean readDefaultValues;
+    private final String messageClassName;
+    private final boolean ignoreParseErrors;
+    private final boolean readDefaultValues;
 
-	private transient ProtoToRowConverter protoToRowConverter;
+    private transient ProtoToRowConverter protoToRowConverter;
 
-	public PbRowDeserializationSchema(
-		RowType rowType,
-		TypeInformation<RowData> resultTypeInfo,
-		String messageClassName,
-		boolean ignoreParseErrors,
-		boolean readDefaultValues) {
-		checkNotNull(rowType, "Type information");
-		this.rowType = rowType;
-		this.resultTypeInfo = resultTypeInfo;
-		this.messageClassName = messageClassName;
-		this.ignoreParseErrors = ignoreParseErrors;
-		this.readDefaultValues = readDefaultValues;
-		//do it in client side to report error in the first place
-		new PbSchemaValidator(PbFormatUtils.getDescriptor(messageClassName), rowType).validate();
-		//this step is only used to validate codegen in client side in the first place
-		try {
-			protoToRowConverter = new ProtoToRowConverter(
-				messageClassName,
-				rowType,
-				readDefaultValues);
-		} catch (PbCodegenException e) {
-			throw new FlinkRuntimeException(e);
-		}
-	}
+    public PbRowDeserializationSchema(
+            RowType rowType,
+            TypeInformation<RowData> resultTypeInfo,
+            String messageClassName,
+            boolean ignoreParseErrors,
+            boolean readDefaultValues) {
+        checkNotNull(rowType, "Type information");
+        this.rowType = rowType;
+        this.resultTypeInfo = resultTypeInfo;
+        this.messageClassName = messageClassName;
+        this.ignoreParseErrors = ignoreParseErrors;
+        this.readDefaultValues = readDefaultValues;
+        // do it in client side to report error in the first place
+        new PbSchemaValidator(PbFormatUtils.getDescriptor(messageClassName), rowType).validate();
+        // this step is only used to validate codegen in client side in the first place
+        try {
+            protoToRowConverter =
+                    new ProtoToRowConverter(messageClassName, rowType, readDefaultValues);
+        } catch (PbCodegenException e) {
+            throw new FlinkRuntimeException(e);
+        }
+    }
 
-	@Override
-	public void open(InitializationContext context) throws Exception {
-		protoToRowConverter = new ProtoToRowConverter(
-			messageClassName,
-			rowType,
-			readDefaultValues);
-	}
+    @Override
+    public void open(InitializationContext context) throws Exception {
+        protoToRowConverter = new ProtoToRowConverter(messageClassName, rowType, readDefaultValues);
+    }
 
-	@Override
-	public RowData deserialize(byte[] message) throws IOException {
-		try {
-			return protoToRowConverter.convertProtoBinaryToRow(message);
-		} catch (Throwable t) {
-			if (ignoreParseErrors) {
-				return null;
-			}
-			LOG.error("Failed to deserialize PB object.", t);
-			throw new IOException("Failed to deserialize PB object.", t);
-		}
-	}
+    @Override
+    public RowData deserialize(byte[] message) throws IOException {
+        try {
+            return protoToRowConverter.convertProtoBinaryToRow(message);
+        } catch (Throwable t) {
+            if (ignoreParseErrors) {
+                return null;
+            }
+            LOG.error("Failed to deserialize PB object.", t);
+            throw new IOException("Failed to deserialize PB object.", t);
+        }
+    }
 
-	@Override
-	public boolean isEndOfStream(RowData nextElement) {
-		return false;
-	}
+    @Override
+    public boolean isEndOfStream(RowData nextElement) {
+        return false;
+    }
 
-	@Override
-	public TypeInformation<RowData> getProducedType() {
-		return this.resultTypeInfo;
-	}
+    @Override
+    public TypeInformation<RowData> getProducedType() {
+        return this.resultTypeInfo;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		PbRowDeserializationSchema that = (PbRowDeserializationSchema) o;
-		return ignoreParseErrors == that.ignoreParseErrors &&
-			readDefaultValues == that.readDefaultValues &&
-			Objects.equals(rowType, that.rowType) &&
-			Objects.equals(resultTypeInfo, that.resultTypeInfo) &&
-			Objects.equals(messageClassName, that.messageClassName);
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PbRowDeserializationSchema that = (PbRowDeserializationSchema) o;
+        return ignoreParseErrors == that.ignoreParseErrors
+                && readDefaultValues == that.readDefaultValues
+                && Objects.equals(rowType, that.rowType)
+                && Objects.equals(resultTypeInfo, that.resultTypeInfo)
+                && Objects.equals(messageClassName, that.messageClassName);
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(
-			rowType,
-			resultTypeInfo,
-			messageClassName,
-			ignoreParseErrors,
-			readDefaultValues);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                rowType, resultTypeInfo, messageClassName, ignoreParseErrors, readDefaultValues);
+    }
 }

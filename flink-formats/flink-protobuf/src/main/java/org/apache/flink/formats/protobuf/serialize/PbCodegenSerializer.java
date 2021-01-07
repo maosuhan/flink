@@ -21,5 +21,5 @@ package org.apache.flink.formats.protobuf.serialize;
 import org.apache.flink.formats.protobuf.PbCodegenException;
 
 public interface PbCodegenSerializer {
-	String codegen(String returnVarName, String rowFieldGetStr) throws PbCodegenException;
+    String codegen(String returnVarName, String rowFieldGetStr) throws PbCodegenException;
 }
