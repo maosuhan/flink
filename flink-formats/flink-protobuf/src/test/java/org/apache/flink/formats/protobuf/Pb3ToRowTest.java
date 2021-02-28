@@ -18,7 +18,7 @@
 
 package org.apache.flink.formats.protobuf;
 
-import org.apache.flink.formats.protobuf.deserialize.PbRowDeserializationSchema;
+import org.apache.flink.formats.protobuf.deserialize.PbRowDataDeserializationSchema;
 import org.apache.flink.formats.protobuf.testproto.Pb3Test;
 import org.apache.flink.formats.protobuf.testproto.Pb3Test.Corpus;
 import org.apache.flink.table.data.MapData;
@@ -36,8 +36,8 @@ public class Pb3ToRowTest {
     @Test
     public void testMessage() throws Exception {
         RowType rowType = PbRowTypeInformation.generateRowType(Pb3Test.getDescriptor());
-        PbRowDeserializationSchema deserializationSchema =
-                new PbRowDeserializationSchema(
+        PbRowDataDeserializationSchema deserializationSchema =
+                new PbRowDataDeserializationSchema(
                         rowType,
                         InternalTypeInfo.of(rowType),
                         Pb3Test.class.getName(),
@@ -56,7 +56,7 @@ public class Pb3ToRowTest {
                         .setF(Corpus.IMAGES)
                         .setG(innerMessageTest)
                         .addH(innerMessageTest)
-                        .setI(ByteString.copyFrom(new byte[] {100}))
+                        .setI(ByteString.copyFrom(new byte[]{100}))
                         .putMap1("a", "b")
                         .putMap1("c", "d")
                         .putMap2("f", innerMessageTest)
@@ -99,8 +99,8 @@ public class Pb3ToRowTest {
     @Test
     public void testDefaultValues() throws Exception {
         RowType rowType = PbRowTypeInformation.generateRowType(Pb3Test.getDescriptor());
-        PbRowDeserializationSchema deserializationSchema =
-                new PbRowDeserializationSchema(
+        PbRowDataDeserializationSchema deserializationSchema =
+                new PbRowDataDeserializationSchema(
                         rowType,
                         InternalTypeInfo.of(rowType),
                         Pb3Test.class.getName(),

@@ -18,7 +18,7 @@
 
 package org.apache.flink.formats.protobuf;
 
-import org.apache.flink.formats.protobuf.deserialize.PbRowDeserializationSchema;
+import org.apache.flink.formats.protobuf.deserialize.PbRowDataDeserializationSchema;
 import org.apache.flink.formats.protobuf.testproto.RepeatedTest;
 import org.apache.flink.table.data.ArrayData;
 import org.apache.flink.table.data.RowData;
@@ -33,8 +33,8 @@ public class RepeatedProtoToRowTest {
     @Test
     public void testRepeated() throws Exception {
         RowType rowType = PbRowTypeInformation.generateRowType(RepeatedTest.getDescriptor());
-        PbRowDeserializationSchema deserializationSchema =
-                new PbRowDeserializationSchema(
+        PbRowDataDeserializationSchema deserializationSchema =
+                new PbRowDataDeserializationSchema(
                         rowType,
                         InternalTypeInfo.of(rowType),
                         RepeatedTest.class.getName(),

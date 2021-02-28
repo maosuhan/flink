@@ -20,7 +20,7 @@ package org.apache.flink.formats.protobuf;
 
 import org.apache.flink.api.common.serialization.DeserializationSchema;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
-import org.apache.flink.formats.protobuf.deserialize.PbRowDeserializationSchema;
+import org.apache.flink.formats.protobuf.deserialize.PbRowDataDeserializationSchema;
 import org.apache.flink.table.connector.ChangelogMode;
 import org.apache.flink.table.connector.format.DecodingFormat;
 import org.apache.flink.table.connector.source.DynamicTableSource;
@@ -46,7 +46,7 @@ public class PbDecodingFormat implements DecodingFormat<DeserializationSchema<Ro
         final RowType rowType = (RowType) producedDataType.getLogicalType();
         final TypeInformation<RowData> rowDataTypeInfo =
                 context.createTypeInformation(producedDataType);
-        return new PbRowDeserializationSchema(
+        return new PbRowDataDeserializationSchema(
                 rowType,
                 rowDataTypeInfo,
                 this.messageClassName,

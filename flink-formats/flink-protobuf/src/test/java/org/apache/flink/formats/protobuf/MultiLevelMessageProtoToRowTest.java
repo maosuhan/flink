@@ -18,7 +18,7 @@
 
 package org.apache.flink.formats.protobuf;
 
-import org.apache.flink.formats.protobuf.deserialize.PbRowDeserializationSchema;
+import org.apache.flink.formats.protobuf.deserialize.PbRowDataDeserializationSchema;
 import org.apache.flink.formats.protobuf.testproto.MultipleLevelMessageTest;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.runtime.typeutils.InternalTypeInfo;
@@ -34,8 +34,8 @@ public class MultiLevelMessageProtoToRowTest {
     public void testMessage() throws Exception {
         RowType rowType =
                 PbRowTypeInformation.generateRowType(MultipleLevelMessageTest.getDescriptor());
-        PbRowDeserializationSchema deserializationSchema =
-                new PbRowDeserializationSchema(
+        PbRowDataDeserializationSchema deserializationSchema =
+                new PbRowDataDeserializationSchema(
                         rowType,
                         InternalTypeInfo.of(rowType),
                         MultipleLevelMessageTest.class.getName(),

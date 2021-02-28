@@ -18,7 +18,7 @@
 
 package org.apache.flink.formats.protobuf;
 
-import org.apache.flink.formats.protobuf.deserialize.PbRowDeserializationSchema;
+import org.apache.flink.formats.protobuf.deserialize.PbRowDataDeserializationSchema;
 import org.apache.flink.formats.protobuf.testproto.SimpleTest;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.runtime.typeutils.InternalTypeInfo;
@@ -35,8 +35,8 @@ public class SimpleProtoToRowTest {
     @Test
     public void testSimple() throws Exception {
         RowType rowType = PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor());
-        PbRowDeserializationSchema deserializationSchema =
-                new PbRowDeserializationSchema(
+        PbRowDataDeserializationSchema deserializationSchema =
+                new PbRowDataDeserializationSchema(
                         rowType,
                         InternalTypeInfo.of(rowType),
                         SimpleTest.class.getName(),
@@ -51,7 +51,7 @@ public class SimpleProtoToRowTest {
                         .setD(0.1f)
                         .setE(0.01)
                         .setF("haha")
-                        .setG(ByteString.copyFrom(new byte[] {1}))
+                        .setG(ByteString.copyFrom(new byte[]{1}))
                         .setH(SimpleTest.Corpus.IMAGES)
                         .setFAbc7D(1) // test fieldNameToJsonName
                         .build();
@@ -76,8 +76,8 @@ public class SimpleProtoToRowTest {
     @Test
     public void testNotExistsValueIgnoringDefault() throws Exception {
         RowType rowType = PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor());
-        PbRowDeserializationSchema deserializationSchema =
-                new PbRowDeserializationSchema(
+        PbRowDataDeserializationSchema deserializationSchema =
+                new PbRowDataDeserializationSchema(
                         rowType,
                         InternalTypeInfo.of(rowType),
                         SimpleTest.class.getName(),
@@ -103,8 +103,8 @@ public class SimpleProtoToRowTest {
     @Test
     public void testDefaultValues() throws Exception {
         RowType rowType = PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor());
-        PbRowDeserializationSchema deserializationSchema =
-                new PbRowDeserializationSchema(
+        PbRowDataDeserializationSchema deserializationSchema =
+                new PbRowDataDeserializationSchema(
                         rowType,
                         InternalTypeInfo.of(rowType),
                         SimpleTest.class.getName(),

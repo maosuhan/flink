@@ -18,7 +18,7 @@
 
 package org.apache.flink.formats.protobuf;
 
-import org.apache.flink.formats.protobuf.deserialize.PbRowDeserializationSchema;
+import org.apache.flink.formats.protobuf.deserialize.PbRowDataDeserializationSchema;
 import org.apache.flink.formats.protobuf.testproto.SimpleTestOuterMulti;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.runtime.typeutils.InternalTypeInfo;
@@ -35,8 +35,8 @@ public class OuterMultiProtoToRowTest {
     public void testSimple() throws Exception {
         RowType rowType =
                 PbRowTypeInformation.generateRowType(SimpleTestOuterMulti.getDescriptor());
-        PbRowDeserializationSchema deserializationSchema =
-                new PbRowDeserializationSchema(
+        PbRowDataDeserializationSchema deserializationSchema =
+                new PbRowDataDeserializationSchema(
                         rowType,
                         InternalTypeInfo.of(rowType),
                         SimpleTestOuterMulti.class.getName(),
@@ -51,7 +51,7 @@ public class OuterMultiProtoToRowTest {
                         .setD(0.1f)
                         .setE(0.01)
                         .setF("haha")
-                        .setG(ByteString.copyFrom(new byte[] {1}))
+                        .setG(ByteString.copyFrom(new byte[]{1}))
                         .build();
 
         RowData row = deserializationSchema.deserialize(simple.toByteArray());

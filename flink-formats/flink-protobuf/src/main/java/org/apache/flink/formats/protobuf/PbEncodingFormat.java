@@ -19,7 +19,7 @@
 package org.apache.flink.formats.protobuf;
 
 import org.apache.flink.api.common.serialization.SerializationSchema;
-import org.apache.flink.formats.protobuf.serialize.PbRowSerializationSchema;
+import org.apache.flink.formats.protobuf.serialize.PbRowDataSerializationSchema;
 import org.apache.flink.table.connector.ChangelogMode;
 import org.apache.flink.table.connector.format.EncodingFormat;
 import org.apache.flink.table.connector.sink.DynamicTableSink;
@@ -43,6 +43,6 @@ public class PbEncodingFormat implements EncodingFormat<SerializationSchema<RowD
     public SerializationSchema<RowData> createRuntimeEncoder(
             DynamicTableSink.Context context, DataType consumedDataType) {
         RowType rowType = (RowType) consumedDataType.getLogicalType();
-        return new PbRowSerializationSchema(rowType, this.messageClassName);
+        return new PbRowDataSerializationSchema(rowType, this.messageClassName);
     }
 }

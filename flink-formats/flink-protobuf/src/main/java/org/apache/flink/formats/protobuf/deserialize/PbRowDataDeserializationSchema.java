@@ -37,9 +37,9 @@ import java.util.Objects;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
 @PublicEvolving
-public class PbRowDeserializationSchema implements DeserializationSchema<RowData> {
+public class PbRowDataDeserializationSchema implements DeserializationSchema<RowData> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PbRowDeserializationSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PbRowDataDeserializationSchema.class);
     private static final long serialVersionUID = -4040917522067315718L;
 
     private final RowType rowType;
@@ -51,7 +51,7 @@ public class PbRowDeserializationSchema implements DeserializationSchema<RowData
 
     private transient ProtoToRowConverter protoToRowConverter;
 
-    public PbRowDeserializationSchema(
+    public PbRowDataDeserializationSchema(
             RowType rowType,
             TypeInformation<RowData> resultTypeInfo,
             String messageClassName,
@@ -110,7 +110,7 @@ public class PbRowDeserializationSchema implements DeserializationSchema<RowData
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        PbRowDeserializationSchema that = (PbRowDeserializationSchema) o;
+        PbRowDataDeserializationSchema that = (PbRowDataDeserializationSchema) o;
         return ignoreParseErrors == that.ignoreParseErrors
                 && readDefaultValues == that.readDefaultValues
                 && Objects.equals(rowType, that.rowType)

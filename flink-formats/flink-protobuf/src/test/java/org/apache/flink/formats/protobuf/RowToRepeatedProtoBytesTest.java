@@ -18,7 +18,7 @@
 
 package org.apache.flink.formats.protobuf;
 
-import org.apache.flink.formats.protobuf.serialize.PbRowSerializationSchema;
+import org.apache.flink.formats.protobuf.serialize.PbRowDataSerializationSchema;
 import org.apache.flink.formats.protobuf.testproto.RepeatedTest;
 import org.apache.flink.table.data.GenericArrayData;
 import org.apache.flink.table.data.GenericRowData;
@@ -28,15 +28,13 @@ import org.apache.flink.table.types.logical.RowType;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
 public class RowToRepeatedProtoBytesTest {
     @Test
     public void testSimple() throws Exception {
         RowData row =
                 GenericRowData.of(
                         1,
-                        new GenericArrayData(new Object[] {1L, 2L, 3L}),
+                        new GenericArrayData(new Object[]{1L, 2L, 3L}),
                         false,
                         0.1f,
                         0.01,
@@ -45,8 +43,8 @@ public class RowToRepeatedProtoBytesTest {
         RowType rowType = PbRowTypeInformation.generateRowType(RepeatedTest.getDescriptor());
         row = ProtobufTestHelper.validateRow(row, rowType);
 
-        PbRowSerializationSchema serializationSchema =
-                new PbRowSerializationSchema(rowType, RepeatedTest.class.getName());
+        PbRowDataSerializationSchema serializationSchema =
+                new PbRowDataSerializationSchema(rowType, RepeatedTest.class.getName());
 
         byte[] bytes = serializationSchema.serialize(row);
         RepeatedTest repeatedTest = RepeatedTest.parseFrom(bytes);
@@ -61,7 +59,7 @@ public class RowToRepeatedProtoBytesTest {
         RowData row =
                 GenericRowData.of(
                         1,
-                        new GenericArrayData(new Object[] {}),
+                        new GenericArrayData(new Object[]{}),
                         false,
                         0.1f,
                         0.01,
@@ -70,8 +68,8 @@ public class RowToRepeatedProtoBytesTest {
         RowType rowType = PbRowTypeInformation.generateRowType(RepeatedTest.getDescriptor());
         row = ProtobufTestHelper.validateRow(row, rowType);
 
-        PbRowSerializationSchema serializationSchema =
-                new PbRowSerializationSchema(rowType, RepeatedTest.class.getName());
+        PbRowDataSerializationSchema serializationSchema =
+                new PbRowDataSerializationSchema(rowType, RepeatedTest.class.getName());
 
         byte[] bytes = serializationSchema.serialize(row);
         RepeatedTest repeatedTest = RepeatedTest.parseFrom(bytes);

@@ -18,7 +18,7 @@
 
 package org.apache.flink.formats.protobuf;
 
-import org.apache.flink.formats.protobuf.serialize.PbRowSerializationSchema;
+import org.apache.flink.formats.protobuf.serialize.PbRowDataSerializationSchema;
 import org.apache.flink.formats.protobuf.testproto.MultipleLevelMessageTest;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
@@ -26,7 +26,6 @@ import org.apache.flink.table.types.logical.RowType;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class RowToMultipleLevelMessageProtoBytesTest {
@@ -40,8 +39,8 @@ public class RowToMultipleLevelMessageProtoBytesTest {
                 PbRowTypeInformation.generateRowType(MultipleLevelMessageTest.getDescriptor());
         row = ProtobufTestHelper.validateRow(row, rowType);
 
-        PbRowSerializationSchema serializationSchema =
-                new PbRowSerializationSchema(rowType, MultipleLevelMessageTest.class.getName());
+        PbRowDataSerializationSchema serializationSchema =
+                new PbRowDataSerializationSchema(rowType, MultipleLevelMessageTest.class.getName());
 
         byte[] bytes = serializationSchema.serialize(row);
 
