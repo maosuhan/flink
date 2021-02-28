@@ -19,7 +19,7 @@
 package org.apache.flink.formats.protobuf;
 
 import org.apache.flink.api.common.typeinfo.TypeInformation;
-import org.apache.flink.formats.protobuf.serialize.PbRowSerializationSchema;
+import org.apache.flink.formats.protobuf.serialize.PbRowDataSerializationSchema;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
@@ -72,8 +72,8 @@ public class ProtobufTestHelper {
                         org.apache.flink.formats.protobuf.PbFormatUtils.getDescriptor(
                                 messageClass.getName()));
         row = validateRow(row, rowType);
-        PbRowSerializationSchema serializationSchema =
-                new PbRowSerializationSchema(rowType, messageClass.getName());
+        PbRowDataSerializationSchema serializationSchema =
+                new PbRowDataSerializationSchema(rowType, messageClass.getName());
         byte[] bytes = serializationSchema.serialize(row);
         return bytes;
     }
@@ -83,8 +83,8 @@ public class ProtobufTestHelper {
         RowType rowType =
                 PbRowTypeInformation.generateRowType(
                         PbFormatUtils.getDescriptor(messageClass.getName()));
-        PbRowSerializationSchema serializationSchema =
-                new PbRowSerializationSchema(rowType, messageClass.getName());
+        PbRowDataSerializationSchema serializationSchema =
+                new PbRowDataSerializationSchema(rowType, messageClass.getName());
         byte[] bytes = serializationSchema.serialize(row);
         return bytes;
     }

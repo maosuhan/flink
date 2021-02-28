@@ -18,7 +18,7 @@
 
 package org.apache.flink.formats.protobuf;
 
-import org.apache.flink.formats.protobuf.deserialize.PbRowDeserializationSchema;
+import org.apache.flink.formats.protobuf.deserialize.PbRowDataDeserializationSchema;
 import org.apache.flink.formats.protobuf.testproto.SimpleTestOuterNomultiProto;
 import org.apache.flink.table.runtime.typeutils.InternalTypeInfo;
 import org.apache.flink.table.types.logical.RowType;
@@ -31,7 +31,7 @@ public class OuterNoMultiProtoToRowTest {
         RowType rowType =
                 PbRowTypeInformation.generateRowType(
                         SimpleTestOuterNomultiProto.SimpleTestOuterNomulti.getDescriptor());
-        new PbRowDeserializationSchema(
+        new PbRowDataDeserializationSchema(
                 rowType,
                 InternalTypeInfo.of(rowType),
                 SimpleTestOuterNomultiProto.SimpleTestOuterNomulti.class.getName(),

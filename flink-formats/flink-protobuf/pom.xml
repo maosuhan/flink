@@ -114,32 +114,27 @@ under the License.
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-jar-plugin</artifactId>
+						<artifactId>maven-shade-plugin</artifactId>
 						<executions>
 							<execution>
+								<id>shade-flink</id>
 								<phase>package</phase>
 								<goals>
-									<goal>jar</goal>
+									<goal>shade</goal>
 								</goals>
 								<configuration>
-									<classifier>sql-jar</classifier>
+									<artifactSet>
+										<includes>
+											<include>*:*</include>
+										</includes>
+									</artifactSet>
+									<relocations>
+										<relocation>
+											<pattern>com.google.protobuf</pattern>
+											<shadedPattern>org.apache.flink.formats.protobuf.shaded.com.google.protobuf</shadedPattern>
+										</relocation>
+									</relocations>
 								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.xolstice.maven.plugins</groupId>
-						<artifactId>protobuf-maven-plugin</artifactId>
-						<version>0.6.1</version>
-						<configuration>
-							<protocExecutable>/usr/local/bin/protoc</protocExecutable>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>compile</goal>
-									<goal>test-compile</goal>
-								</goals>
 							</execution>
 						</executions>
 					</plugin>
@@ -147,4 +142,27 @@ under the License.
 			</build>
 		</profile>
 	</profiles>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.github.os72</groupId>
+				<artifactId>protoc-jar-maven-plugin</artifactId>
+				<version>${protoc.version}</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<protocVersion>${protoc.version}</protocVersion>
+							<inputDirectories>
+								<include>src/test/proto</include>
+							</inputDirectories>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

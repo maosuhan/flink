@@ -30,9 +30,9 @@ import com.google.protobuf.Descriptors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PbRowSerializationSchema implements SerializationSchema<RowData> {
+public class PbRowDataSerializationSchema implements SerializationSchema<RowData> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PbRowSerializationSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PbRowDataSerializationSchema.class);
 
     private final RowType rowType;
 
@@ -40,7 +40,7 @@ public class PbRowSerializationSchema implements SerializationSchema<RowData> {
 
     private transient RowToProtoConverter rowToProtoConverter;
 
-    public PbRowSerializationSchema(RowType rowType, String messageClassName) {
+    public PbRowDataSerializationSchema(RowType rowType, String messageClassName) {
         this.rowType = rowType;
         this.messageClassName = messageClassName;
         Descriptors.Descriptor descriptor = PbFormatUtils.getDescriptor(messageClassName);
