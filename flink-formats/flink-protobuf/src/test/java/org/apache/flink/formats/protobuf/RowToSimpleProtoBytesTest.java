@@ -42,7 +42,7 @@ public class RowToSimpleProtoBytesTest {
                         0.1f,
                         0.01,
                         StringData.fromString("hello"),
-                        new byte[]{1},
+                        new byte[] {1},
                         StringData.fromString("IMAGES"),
                         1);
 

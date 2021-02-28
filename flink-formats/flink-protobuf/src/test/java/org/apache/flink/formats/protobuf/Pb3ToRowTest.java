@@ -56,7 +56,7 @@ public class Pb3ToRowTest {
                         .setF(Corpus.IMAGES)
                         .setG(innerMessageTest)
                         .addH(innerMessageTest)
-                        .setI(ByteString.copyFrom(new byte[]{100}))
+                        .setI(ByteString.copyFrom(new byte[] {100}))
                         .putMap1("a", "b")
                         .putMap1("c", "d")
                         .putMap2("f", innerMessageTest)

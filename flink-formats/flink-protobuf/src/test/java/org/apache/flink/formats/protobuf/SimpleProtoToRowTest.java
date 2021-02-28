@@ -51,7 +51,7 @@ public class SimpleProtoToRowTest {
                         .setD(0.1f)
                         .setE(0.01)
                         .setF("haha")
-                        .setG(ByteString.copyFrom(new byte[]{1}))
+                        .setG(ByteString.copyFrom(new byte[] {1}))
                         .setH(SimpleTest.Corpus.IMAGES)
                         .setFAbc7D(1) // test fieldNameToJsonName
                         .build();
