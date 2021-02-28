@@ -51,7 +51,7 @@ public class OuterMultiProtoToRowTest {
                         .setD(0.1f)
                         .setE(0.01)
                         .setF("haha")
-                        .setG(ByteString.copyFrom(new byte[]{1}))
+                        .setG(ByteString.copyFrom(new byte[] {1}))
                         .build();
 
         RowData row = deserializationSchema.deserialize(simple.toByteArray());

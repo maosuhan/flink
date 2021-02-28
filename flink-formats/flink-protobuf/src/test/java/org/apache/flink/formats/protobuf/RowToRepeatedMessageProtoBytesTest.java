@@ -28,12 +28,14 @@ import org.apache.flink.table.types.logical.RowType;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class RowToRepeatedMessageProtoBytesTest {
     @Test
     public void testRepeatedMessage() throws Exception {
         RowData subRow = GenericRowData.of(1, 2L);
         RowData subRow2 = GenericRowData.of(3, 4L);
-        ArrayData tmp = new GenericArrayData(new Object[]{subRow, subRow2});
+        ArrayData tmp = new GenericArrayData(new Object[] {subRow, subRow2});
         RowData row = GenericRowData.of(tmp);
 
         RowType rowType = PbRowTypeInformation.generateRowType(RepeatedMessageTest.getDescriptor());

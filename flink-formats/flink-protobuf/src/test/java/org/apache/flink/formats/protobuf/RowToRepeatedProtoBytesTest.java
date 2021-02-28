@@ -28,13 +28,15 @@ import org.apache.flink.table.types.logical.RowType;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class RowToRepeatedProtoBytesTest {
     @Test
     public void testSimple() throws Exception {
         RowData row =
                 GenericRowData.of(
                         1,
-                        new GenericArrayData(new Object[]{1L, 2L, 3L}),
+                        new GenericArrayData(new Object[] {1L, 2L, 3L}),
                         false,
                         0.1f,
                         0.01,
@@ -59,7 +61,7 @@ public class RowToRepeatedProtoBytesTest {
         RowData row =
                 GenericRowData.of(
                         1,
-                        new GenericArrayData(new Object[]{}),
+                        new GenericArrayData(new Object[] {}),
                         false,
                         0.1f,
                         0.01,
