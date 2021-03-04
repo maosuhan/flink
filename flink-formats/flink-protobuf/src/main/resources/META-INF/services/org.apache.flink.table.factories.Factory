@@ -1,1 +1,1 @@
-org.apache.flink.formats.pb.PbFormatFactory
+org.apache.flink.formats.protobuf.PbFormatFactory
