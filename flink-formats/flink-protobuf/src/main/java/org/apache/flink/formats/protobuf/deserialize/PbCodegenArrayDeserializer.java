@@ -26,6 +26,7 @@ import org.apache.flink.table.types.logical.LogicalType;
 
 import com.google.protobuf.Descriptors;
 
+/** Deserializer to convert proto array type object to flink array type data. */
 public class PbCodegenArrayDeserializer implements PbCodegenDeserializer {
     private Descriptors.FieldDescriptor fd;
     private LogicalType elementType;
@@ -40,9 +41,10 @@ public class PbCodegenArrayDeserializer implements PbCodegenDeserializer {
     }
 
     @Override
-    public String codegen(String returnVarName, String messageGetStr) throws PbCodegenException {
+    public String codegen(String returnInternalDataVarName, String pbGetStr)
+            throws PbCodegenException {
         // The type of messageGetStr is a native List object,
-        // it should be converted to ArrayData of flink internal type
+        // it should be converted to ArrayData of flink internal type.
         PbCodegenVarId varUid = PbCodegenVarId.getInstance();
         int uid = varUid.getAndIncrement();
         String protoTypeStr = PbCodegenUtils.getTypeStrFromProto(fd, false);
@@ -52,7 +54,7 @@ public class PbCodegenArrayDeserializer implements PbCodegenDeserializer {
         String iVar = "i" + uid;
         String subPbObjVar = "subObj" + uid;
 
-        appender.appendLine("List<" + protoTypeStr + "> " + listPbVar + "=" + messageGetStr);
+        appender.appendLine("List<" + protoTypeStr + "> " + listPbVar + "=" + pbGetStr);
         appender.appendLine(
                 "Object[] " + newArrDataVar + "= new " + "Object[" + listPbVar + ".size()]");
         appender.appendSegment(
@@ -75,7 +77,8 @@ public class PbCodegenArrayDeserializer implements PbCodegenDeserializer {
         appender.appendSegment(code);
         appender.appendLine(newArrDataVar + "[" + iVar + "]=" + subReturnDataVar + "");
         appender.appendSegment("}");
-        appender.appendLine(returnVarName + " = new GenericArrayData(" + newArrDataVar + ")");
+        appender.appendLine(
+                returnInternalDataVarName + " = new GenericArrayData(" + newArrDataVar + ")");
         return appender.code();
     }
 }

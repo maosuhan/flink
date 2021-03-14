@@ -18,6 +18,7 @@
 
 package org.apache.flink.formats.protobuf.serialize;
 
+import org.apache.flink.annotation.PublicEvolving;
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.formats.protobuf.PbCodegenException;
 import org.apache.flink.formats.protobuf.PbFormatUtils;
@@ -30,6 +31,14 @@ import com.google.protobuf.Descriptors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Serialization schema from Flink to Protobuf types.
+ *
+ * <p>Serializes a {@link RowData } to protobuf binary data.
+ *
+ * <p>Failures during deserialization are forwarded as wrapped {@link FlinkRuntimeException}.
+ */
+@PublicEvolving
 public class PbRowDataSerializationSchema implements SerializationSchema<RowData> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PbRowDataSerializationSchema.class);
@@ -46,6 +55,7 @@ public class PbRowDataSerializationSchema implements SerializationSchema<RowData
         Descriptors.Descriptor descriptor = PbFormatUtils.getDescriptor(messageClassName);
         new PbSchemaValidator(descriptor, rowType).validate();
         try {
+            // validate converter in client side to early detect errors
             rowToProtoConverter = new RowToProtoConverter(messageClassName, rowType);
         } catch (PbCodegenException e) {
             throw new FlinkRuntimeException(e);

@@ -22,9 +22,16 @@ import org.apache.flink.formats.protobuf.serialize.PbCodegenSerializeFactory;
 import org.apache.flink.formats.protobuf.serialize.PbCodegenSerializer;
 import org.apache.flink.table.types.logical.LogicalType;
 
-import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 
+/** Codegen utils only used in protobuf format. */
 public class PbCodegenUtils {
+    /**
+     * @param dataGetter code phrase which represent flink container type like row/array in codegen
+     *     sections
+     * @param index the index number in flink container type
+     * @param eleType the element type
+     */
     public static String getContainerDataFieldGetterCodePhrase(
             String dataGetter, String index, LogicalType eleType) {
         switch (eleType.getTypeRoot()) {
@@ -56,16 +63,22 @@ public class PbCodegenUtils {
         }
     }
 
-    public static String getTypeStrFromProto(Descriptors.FieldDescriptor fd, boolean isRepeated)
+    /**
+     * Get java type str from {@link FieldDescriptor} which directly fetched from protobuf object.
+     *
+     * @return The returned code phrase will be used as java type str in codegen sections.
+     * @throws PbCodegenException
+     */
+    public static String getTypeStrFromProto(FieldDescriptor fd, boolean isRepeated)
             throws PbCodegenException {
         String typeStr;
         switch (fd.getJavaType()) {
             case MESSAGE:
                 if (fd.isMapField()) {
                     // map
-                    Descriptors.FieldDescriptor keyFd =
+                    FieldDescriptor keyFd =
                             fd.getMessageType().findFieldByName(PbConstant.PB_MAP_KEY_NAME);
-                    Descriptors.FieldDescriptor valueFd =
+                    FieldDescriptor valueFd =
                             fd.getMessageType().findFieldByName(PbConstant.PB_MAP_VALUE_NAME);
                     // key and value cannot be repeated
                     String keyTypeStr = getTypeStrFromProto(keyFd, false);
@@ -110,6 +123,11 @@ public class PbCodegenUtils {
         }
     }
 
+    /**
+     * Get java type str from {@link LogicalType} which directly fetched from flink type.
+     *
+     * @return The returned code phrase will be used as java type str in codegen sections.
+     */
     public static String getTypeStrFromLogicType(LogicalType type) {
         switch (type.getTypeRoot()) {
             case INTEGER:
@@ -139,7 +157,12 @@ public class PbCodegenUtils {
         }
     }
 
-    public static String getDefaultPbValue(Descriptors.FieldDescriptor fieldDescriptor)
+    /**
+     * Get protobuf default value from {@link FieldDescriptor}.
+     *
+     * @return The java code phrase which represents default value calculation.
+     */
+    public static String getDefaultPbValue(FieldDescriptor fieldDescriptor)
             throws PbCodegenException {
         switch (fieldDescriptor.getJavaType()) {
             case MESSAGE:
@@ -168,28 +191,43 @@ public class PbCodegenUtils {
         }
     }
 
+    /**
+     * This method will be called from row serializer of array/map type because flink contains both
+     * array/map type in array format. Map/Arr cannot contain null value in proto object so we must
+     * do conversion in case of null values in map/arr type.
+     *
+     * @param arrDataVar code phrase represent arrayData of arr type or keyData/valueData in map
+     *     type.
+     * @param iVar the index in arrDataVar
+     * @param pbVar the returned pb variable name in codegen.
+     * @param dataVar the input variable from flink row
+     * @param elementPbFd {@link FieldDescriptor} of element type in proto object
+     * @param elementDataType {@link LogicalType} of element type in flink object
+     * @return The java code segment which represents field value retrieval.
+     */
     public static String generateArrElementCodeWithDefaultValue(
             String arrDataVar,
             String iVar,
             String pbVar,
             String dataVar,
-            Descriptors.FieldDescriptor elementFd,
-            LogicalType elementType)
+            FieldDescriptor elementPbFd,
+            LogicalType elementDataType)
             throws PbCodegenException {
         PbCodegenAppender appender = new PbCodegenAppender();
-        String protoTypeStr = PbCodegenUtils.getTypeStrFromProto(elementFd, false);
-        String dataTypeStr = PbCodegenUtils.getTypeStrFromLogicType(elementType);
+        String protoTypeStr = PbCodegenUtils.getTypeStrFromProto(elementPbFd, false);
+        String dataTypeStr = PbCodegenUtils.getTypeStrFromLogicType(elementDataType);
         appender.appendLine(protoTypeStr + " " + pbVar);
         appender.appendSegment("if(" + arrDataVar + ".isNullAt(" + iVar + ")){");
-        appender.appendLine(pbVar + "=" + PbCodegenUtils.getDefaultPbValue(elementFd));
+        appender.appendLine(pbVar + "=" + PbCodegenUtils.getDefaultPbValue(elementPbFd));
         appender.appendSegment("}else{");
         appender.appendLine(dataTypeStr + " " + dataVar);
         String getElementDataCode =
-                PbCodegenUtils.getContainerDataFieldGetterCodePhrase(arrDataVar, iVar, elementType);
+                PbCodegenUtils.getContainerDataFieldGetterCodePhrase(
+                        arrDataVar, iVar, elementDataType);
         appender.appendLine(dataVar + " = " + getElementDataCode);
-        PbCodegenSerializer codegenDes =
-                PbCodegenSerializeFactory.getPbCodegenSer(elementFd, elementType);
-        String code = codegenDes.codegen(pbVar, dataVar);
+        PbCodegenSerializer codegenSer =
+                PbCodegenSerializeFactory.getPbCodegenSer(elementPbFd, elementDataType);
+        String code = codegenSer.codegen(pbVar, dataVar);
         appender.appendSegment(code);
         appender.appendSegment("}");
         return appender.code();

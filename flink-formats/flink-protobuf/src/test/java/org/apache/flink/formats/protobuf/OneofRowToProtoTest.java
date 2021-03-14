@@ -27,7 +27,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-public class RowToOneofProtoBytesTest {
+/** Test conversion of flink internal map data to one_of proto data. */
+public class OneofRowToProtoTest {
     @Test
     public void testSimple() throws Exception {
         RowData row = GenericRowData.of(1, 2);

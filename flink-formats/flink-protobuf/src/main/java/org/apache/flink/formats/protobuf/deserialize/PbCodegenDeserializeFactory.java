@@ -27,13 +27,13 @@ import org.apache.flink.table.types.logical.RowType;
 
 import com.google.protobuf.Descriptors;
 
+/** Codegen factory class which return {@link PbCodegenDeserializer} of different data type. */
 public class PbCodegenDeserializeFactory {
     public static PbCodegenDeserializer getPbCodegenDes(
             Descriptors.FieldDescriptor fd, LogicalType type, boolean readDefaultValues)
             throws PbCodegenException {
-        // We do not use FieldDescriptor to check because when FieldDescriptor is an element type in
-        // array,
-        // FieldDescriptor.isRepeated() is still true
+        // We do not use FieldDescriptor to check because there's no way to get
+        // element field descriptor of array type.
         if (type instanceof RowType) {
             return new PbCodegenRowDeserializer(
                     fd.getMessageType(), (RowType) type, readDefaultValues);

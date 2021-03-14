@@ -31,7 +31,8 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class RowToMapProtoBytesTest {
+/** Test conversion of flink internal map data to proto data. */
+public class MapRowToProtoTest {
     @Test
     public void testSimple() throws Exception {
         Map map1 = new HashMap();

@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+/** Test conversion of proto map data to flink internal data. */
 public class MapProtoToRowTest {
     @Test
     public void testMessage() throws Exception {

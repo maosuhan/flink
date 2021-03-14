@@ -18,6 +18,7 @@
 
 package org.apache.flink.formats.protobuf;
 
+/** Helper class which do code fragment concat. */
 public class PbCodegenAppender {
     private StringBuilder sb;
 

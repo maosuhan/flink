@@ -32,6 +32,10 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+/**
+ * Test conversion of proto3 data to flink internal data. Default values after conversion is tested
+ * especially.
+ */
 public class Pb3ToRowTest {
     @Test
     public void testMessage() throws Exception {

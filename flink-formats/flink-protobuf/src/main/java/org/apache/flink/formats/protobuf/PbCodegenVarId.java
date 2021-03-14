@@ -20,6 +20,10 @@ package org.apache.flink.formats.protobuf;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Singleton class for generating variable suffix number globally to avoid conflict in codegen
+ * sections. It can be only used in protobuf format code.
+ */
 public class PbCodegenVarId {
     private static PbCodegenVarId varUid = new PbCodegenVarId();
     private AtomicInteger atomicInteger = new AtomicInteger();

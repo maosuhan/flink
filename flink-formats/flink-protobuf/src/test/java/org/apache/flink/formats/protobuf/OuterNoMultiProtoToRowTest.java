@@ -25,6 +25,19 @@ import org.apache.flink.table.types.logical.RowType;
 
 import org.junit.Test;
 
+/**
+ * Test class for below case
+ *
+ * <PRE>
+ * syntax = "proto2";
+ * package org.apache.flink.formats.protobuf.testproto;
+ * option java_package = "org.apache.flink.formats.protobuf.testproto";
+ * option java_outer_classname = "SimpleTestOuterNomultiProto";
+ * message SimpleTestOuterNomulti {
+ * </PRE>
+ *
+ * <p>This is invalid proto definition and {@link IllegalArgumentException} should throw.
+ */
 public class OuterNoMultiProtoToRowTest {
     @Test(expected = IllegalArgumentException.class)
     public void testSimple() {

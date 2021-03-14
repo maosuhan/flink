@@ -30,7 +30,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class RowToRepeatedMessageProtoBytesTest {
+/** Test conversion of flink internal array of row to proto data. */
+public class RepeatedMessageRowToProtoTest {
     @Test
     public void testRepeatedMessage() throws Exception {
         RowData subRow = GenericRowData.of(1, 2L);

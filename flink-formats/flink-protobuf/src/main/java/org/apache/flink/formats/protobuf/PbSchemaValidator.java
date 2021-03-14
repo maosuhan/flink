@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/** Validation class to verify protobuf definition and flink DDL schema. */
 public class PbSchemaValidator {
     private Descriptors.Descriptor descriptor;
     private RowType rowType;
@@ -88,6 +89,12 @@ public class PbSchemaValidator {
         }
     }
 
+    /**
+     * Validate type match of row type.
+     *
+     * @param descriptor
+     * @param rowType
+     */
     public void validateTypeMatch(Descriptors.Descriptor descriptor, RowType rowType) {
         rowType.getFields()
                 .forEach(
@@ -105,6 +112,12 @@ public class PbSchemaValidator {
                         });
     }
 
+    /**
+     * Validate type match of general type.
+     *
+     * @param fd
+     * @param logicalType
+     */
     public void validateTypeMatch(FieldDescriptor fd, LogicalType logicalType) {
         if (!fd.isRepeated()) {
             if (fd.getJavaType() != JavaType.MESSAGE) {
@@ -138,6 +151,12 @@ public class PbSchemaValidator {
         }
     }
 
+    /**
+     * Only validate type match for simple type like int, long, string, boolean.
+     *
+     * @param fd {@link FieldDescriptor} in proto descriptor
+     * @param logicalTypeRoot {@link LogicalTypeRoot} of row element
+     */
     private void validateSimpleType(FieldDescriptor fd, LogicalTypeRoot logicalTypeRoot) {
         if (!typeMatchMap.containsKey(fd.getJavaType())) {
             throw new ValidationException("Unsupported protobuf java type: " + fd.getJavaType());

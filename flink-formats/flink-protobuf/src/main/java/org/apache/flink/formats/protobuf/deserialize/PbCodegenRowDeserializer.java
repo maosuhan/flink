@@ -25,27 +25,26 @@ import org.apache.flink.formats.protobuf.PbFormatUtils;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.RowType;
 
-import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 
-import java.util.List;
-
+/** Deserializer to convert proto message type object to flink row type data. */
 public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
-    private List<Descriptors.FieldDescriptor> fds;
-    private Descriptors.Descriptor descriptor;
+    private Descriptor descriptor;
     private RowType rowType;
     private boolean readDefaultValues;
     private PbCodegenAppender appender = new PbCodegenAppender();
 
     public PbCodegenRowDeserializer(
-            Descriptors.Descriptor descriptor, RowType rowType, boolean readDefaultValues) {
-        this.fds = descriptor.getFields();
+            Descriptor descriptor, RowType rowType, boolean readDefaultValues) {
         this.rowType = rowType;
         this.descriptor = descriptor;
         this.readDefaultValues = readDefaultValues;
     }
 
     @Override
-    public String codegen(String returnVarName, String messageGetStr) throws PbCodegenException {
+    public String codegen(String returnInternalDataVarName, String pbGetStr)
+            throws PbCodegenException {
         // The type of messageGetStr is a native pb object,
         // it should be converted to RowData of flink internal type
         PbCodegenVarId varUid = PbCodegenVarId.getInstance();
@@ -55,7 +54,7 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
 
         int fieldSize = rowType.getFieldNames().size();
         String pbMessageTypeStr = PbFormatUtils.getFullJavaName(descriptor);
-        appender.appendLine(pbMessageTypeStr + " " + pbMessageVar + " = " + messageGetStr);
+        appender.appendLine(pbMessageTypeStr + " " + pbMessageVar + " = " + pbGetStr);
         appender.appendLine(
                 "GenericRowData " + rowDataVar + " = new GenericRowData(" + fieldSize + ")");
         int index = 0;
@@ -64,7 +63,7 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
             String elementDataVar = "elementDataVar" + subUid;
 
             LogicalType subType = rowType.getTypeAt(rowType.getFieldIndex(fieldName));
-            Descriptors.FieldDescriptor elementFd = descriptor.findFieldByName(fieldName);
+            FieldDescriptor elementFd = descriptor.findFieldByName(fieldName);
             String strongCamelFieldName = PbFormatUtils.getStrongCamelCaseJsonName(fieldName);
             PbCodegenDeserializer codegen =
                     PbCodegenDeserializeFactory.getPbCodegenDes(
@@ -110,12 +109,11 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
             appender.appendLine(rowDataVar + ".setField(" + index + ", " + elementDataVar + ")");
             index += 1;
         }
-        appender.appendLine(returnVarName + " = " + rowDataVar);
+        appender.appendLine(returnInternalDataVarName + " = " + rowDataVar);
         return appender.code();
     }
 
-    private String pbMessageElementGetStr(
-            String message, String fieldName, Descriptors.FieldDescriptor fd) {
+    private String pbMessageElementGetStr(String message, String fieldName, FieldDescriptor fd) {
         if (fd.isMapField()) {
             return message + ".get" + fieldName + "Map()";
         } else if (fd.isRepeated()) {
@@ -125,8 +123,7 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
         }
     }
 
-    private String isMessageNonEmptyStr(
-            String message, String fieldName, Descriptors.FieldDescriptor fd) {
+    private String isMessageNonEmptyStr(String message, String fieldName, FieldDescriptor fd) {
         if (fd.isRepeated()) {
             return message + ".get" + fieldName + "Count() > 0";
         } else {

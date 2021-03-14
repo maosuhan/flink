@@ -21,6 +21,7 @@ package org.apache.flink.formats.protobuf;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;
 
+/** This class holds configuration constants used by protobuf format. */
 public class PbFormatOptions {
     public static final ConfigOption<String> MESSAGE_CLASS_NAME =
             ConfigOptions.key("message-class-name")

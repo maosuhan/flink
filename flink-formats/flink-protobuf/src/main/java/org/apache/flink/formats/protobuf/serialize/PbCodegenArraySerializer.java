@@ -26,6 +26,7 @@ import org.apache.flink.table.types.logical.LogicalType;
 
 import com.google.protobuf.Descriptors;
 
+/** Serializer to convert flink array type data to proto array type object. */
 public class PbCodegenArraySerializer implements PbCodegenSerializer {
     private Descriptors.FieldDescriptor fd;
     private LogicalType elementType;
@@ -36,7 +37,8 @@ public class PbCodegenArraySerializer implements PbCodegenSerializer {
     }
 
     @Override
-    public String codegen(String returnVarName, String rowFieldGetter) throws PbCodegenException {
+    public String codegen(String returnPbVarName, String internalDataGetStr)
+            throws PbCodegenException {
         PbCodegenVarId varUid = PbCodegenVarId.getInstance();
         int uid = varUid.getAndIncrement();
         PbCodegenAppender appender = new PbCodegenAppender();
@@ -47,7 +49,7 @@ public class PbCodegenArraySerializer implements PbCodegenSerializer {
         String elementPbVar = "elementPbVar" + uid;
         String iVar = "i" + uid;
 
-        appender.appendLine("ArrayData " + arrayDataVar + " = " + rowFieldGetter);
+        appender.appendLine("ArrayData " + arrayDataVar + " = " + internalDataGetStr);
         appender.appendLine("List<" + protoTypeStr + "> " + pbListVar + "= new ArrayList()");
         appender.appendSegment(
                 "for(int "
@@ -67,7 +69,7 @@ public class PbCodegenArraySerializer implements PbCodegenSerializer {
         appender.appendLine(pbListVar + ".add( " + elementPbVar + ")");
         // end for
         appender.appendSegment("}");
-        appender.appendLine(returnVarName + " = " + pbListVar);
+        appender.appendLine(returnPbVarName + " = " + pbListVar);
         return appender.code();
     }
 }

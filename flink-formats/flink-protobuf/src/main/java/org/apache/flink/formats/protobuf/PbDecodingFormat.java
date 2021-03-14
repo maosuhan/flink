@@ -28,6 +28,7 @@ import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.DataType;
 import org.apache.flink.table.types.logical.RowType;
 
+/** {@link DecodingFormat} for protobuf decoding. */
 public class PbDecodingFormat implements DecodingFormat<DeserializationSchema<RowData>> {
     private String messageClassName;
     private boolean ignoreParseErrors;

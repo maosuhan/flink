@@ -29,6 +29,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/** Test conversion of proto one_of data to flink internal data. */
 public class OneofProtoToRowTest {
     @Test
     public void testSimple() throws Exception {

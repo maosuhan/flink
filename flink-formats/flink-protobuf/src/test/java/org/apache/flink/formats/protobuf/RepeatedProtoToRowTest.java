@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+/** Test conversion of proto list of primitive data to flink internal data. */
 public class RepeatedProtoToRowTest {
     @Test
     public void testRepeated() throws Exception {

@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+/** Test conversion of proto repeated message data to flink internal data. */
 public class RepeatedMessageProtoToRowTest {
     @Test
     public void testRepeatedMessage() throws Exception {

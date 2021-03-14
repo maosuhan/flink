@@ -28,6 +28,7 @@ import org.apache.flink.table.types.logical.MapType;
 
 import com.google.protobuf.Descriptors;
 
+/** Serializer to convert flink map type data to proto map type object. */
 public class PbCodegenMapSerializer implements PbCodegenSerializer {
     private Descriptors.FieldDescriptor fd;
     private MapType mapType;
@@ -38,7 +39,8 @@ public class PbCodegenMapSerializer implements PbCodegenSerializer {
     }
 
     @Override
-    public String codegen(String returnVarName, String rowFieldGetStr) throws PbCodegenException {
+    public String codegen(String returnPbVarName, String internalDataGetStr)
+            throws PbCodegenException {
         PbCodegenVarId varUid = PbCodegenVarId.getInstance();
         int uid = varUid.getAndIncrement();
         LogicalType keyType = mapType.getKeyType();
@@ -61,9 +63,10 @@ public class PbCodegenMapSerializer implements PbCodegenSerializer {
         String keyDataVar = "keyDataVar" + uid;
         String valueDataVar = "valueDataVar" + uid;
 
-        appender.appendLine("ArrayData " + keyArrDataVar + " = " + rowFieldGetStr + ".keyArray()");
         appender.appendLine(
-                "ArrayData " + valueArrDataVar + " = " + rowFieldGetStr + ".valueArray()");
+                "ArrayData " + keyArrDataVar + " = " + internalDataGetStr + ".keyArray()");
+        appender.appendLine(
+                "ArrayData " + valueArrDataVar + " = " + internalDataGetStr + ".valueArray()");
 
         appender.appendLine(
                 "Map<"
@@ -99,7 +102,7 @@ public class PbCodegenMapSerializer implements PbCodegenSerializer {
         appender.appendLine(pbMapVar + ".put(" + keyPbVar + ", " + valuePbVar + ")");
         appender.appendSegment("}");
 
-        appender.appendLine(returnVarName + " = " + pbMapVar);
+        appender.appendLine(returnPbVarName + " = " + pbMapVar);
         return appender.code();
     }
 }

@@ -28,6 +28,7 @@ import org.apache.flink.table.types.logical.MapType;
 
 import com.google.protobuf.Descriptors;
 
+/** Deserializer to convert proto map type object to flink map type data. */
 public class PbCodegenMapDeserializer implements PbCodegenDeserializer {
     private Descriptors.FieldDescriptor fd;
     private MapType mapType;
@@ -41,7 +42,8 @@ public class PbCodegenMapDeserializer implements PbCodegenDeserializer {
     }
 
     @Override
-    public String codegen(String returnVarName, String messageGetStr) throws PbCodegenException {
+    public String codegen(String returnInternalDataVarName, String pbGetStr)
+            throws PbCodegenException {
         // The type of messageGetStr is a native Map object,
         // it should be converted to MapData of flink internal type
         PbCodegenVarId varUid = PbCodegenVarId.getInstance();
@@ -71,7 +73,7 @@ public class PbCodegenMapDeserializer implements PbCodegenDeserializer {
                         + "> "
                         + pbMapVar
                         + " = "
-                        + messageGetStr
+                        + pbGetStr
                         + ";");
         appender.appendLine("Map " + resultDataMapVar + " = new HashMap()");
         appender.appendSegment(
@@ -100,7 +102,8 @@ public class PbCodegenMapDeserializer implements PbCodegenDeserializer {
         appender.appendSegment(valueGenCode);
         appender.appendLine(resultDataMapVar + ".put(" + keyDataVar + ", " + valueDataVar + ")");
         appender.appendSegment("}");
-        appender.appendLine(returnVarName + " = new GenericMapData(" + resultDataMapVar + ")");
+        appender.appendLine(
+                returnInternalDataVarName + " = new GenericMapData(" + resultDataMapVar + ")");
         return appender.code();
     }
 }

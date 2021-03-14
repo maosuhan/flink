@@ -39,6 +39,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * {@link RowToProtoConverter} can convert flink row data to binary protobuf message data by codegen
+ * process.
+ */
 public class RowToProtoConverter {
     private static final Logger LOG = LoggerFactory.getLogger(ProtoToRowConverter.class);
     private ScriptEvaluator se;
@@ -64,19 +68,18 @@ public class RowToProtoConverter {
                     Map.class.getName(),
                     HashMap.class.getName());
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("AbstractMessage message = null;\n");
+            PbCodegenAppender codegenAppender = new PbCodegenAppender();
+            codegenAppender.appendLine("AbstractMessage message = null");
             PbCodegenSerializer codegenSer =
                     PbCodegenSerializeFactory.getPbCodegenTopRowSer(descriptor, rowType);
             String genCode = codegenSer.codegen("message", "rowData");
-            sb.append(genCode);
-            sb.append("return message;\n");
-            String code = sb.toString();
+            codegenAppender.appendSegment(genCode);
+            codegenAppender.appendLine("return message");
 
-            String printCode = PbCodegenAppender.printWithLineNumber(code);
-            LOG.debug("Protobuf decode codegen: \n" + printCode);
+            String printCode = codegenAppender.printWithLineNumber();
+            LOG.debug("Protobuf encode codegen: \n" + printCode);
 
-            se.cook(code);
+            se.cook(codegenAppender.code());
         } catch (Exception ex) {
             throw new PbCodegenException(ex);
         }
