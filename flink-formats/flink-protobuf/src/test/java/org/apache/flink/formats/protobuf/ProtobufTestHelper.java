@@ -40,6 +40,7 @@ import java.util.Map;
 
 import static org.apache.flink.table.types.utils.TypeConversions.fromLogicalToDataType;
 
+/** Test helper class for protobuf format. */
 public class ProtobufTestHelper {
     public static RowData validateRow(RowData rowData, RowType rowType) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironment();

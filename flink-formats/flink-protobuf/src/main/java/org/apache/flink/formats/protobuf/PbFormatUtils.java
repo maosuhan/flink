@@ -22,6 +22,7 @@ import org.apache.flink.table.types.logical.LogicalType;
 
 import com.google.protobuf.Descriptors;
 
+/** Protobuf function util. */
 public class PbFormatUtils {
 
     // protobuf code has a bug that, f_abc_7d will be convert to fAbc7d, but actually we need fAbc7D

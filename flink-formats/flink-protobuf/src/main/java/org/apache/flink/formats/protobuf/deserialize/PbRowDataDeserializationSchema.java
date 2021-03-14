@@ -36,6 +36,14 @@ import java.util.Objects;
 
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
+/**
+ * Deserialization schema from Protobuf to Flink types.
+ *
+ * <p>Deserializes a <code>byte[]</code> message as a protobuf object and reads the specified
+ * fields.
+ *
+ * <p>Failures during deserialization are forwarded as wrapped IOExceptions.
+ */
 @PublicEvolving
 public class PbRowDataDeserializationSchema implements DeserializationSchema<RowData> {
 
@@ -67,6 +75,7 @@ public class PbRowDataDeserializationSchema implements DeserializationSchema<Row
         new PbSchemaValidator(PbFormatUtils.getDescriptor(messageClassName), rowType).validate();
         // this step is only used to validate codegen in client side in the first place
         try {
+            // validate converter in client side to early detect errors
             protoToRowConverter =
                     new ProtoToRowConverter(messageClassName, rowType, readDefaultValues);
         } catch (PbCodegenException e) {

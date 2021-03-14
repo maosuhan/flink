@@ -31,7 +31,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class RowToSimpleProtoBytesTest {
+/** Test conversion of flink internal primitive data to proto data. */
+public class SimpleRowToProtoTest {
     @Test
     public void testSimple() throws Exception {
         RowData row =

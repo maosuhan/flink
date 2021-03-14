@@ -26,6 +26,7 @@ import org.apache.flink.table.types.logical.LogicalType;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 
+/** Serializer to convert flink simple type data to proto simple type object. */
 public class PbCodegenSimpleSerializer implements PbCodegenSerializer {
     private Descriptors.FieldDescriptor fd;
     private LogicalType type;
@@ -36,27 +37,25 @@ public class PbCodegenSimpleSerializer implements PbCodegenSerializer {
     }
 
     /**
-     * @param returnPbVar
-     * @param dataGetStr dataGetStr is the expression string from row data, the real value of
-     *     rowFieldGetStr may be null, String, int, long, double, float, boolean, byte[]
-     * @return
+     * @param internalDataGetStr the real value of {@code internalDataGetStr} may be String, int,
+     *     long, double, float, boolean, byte[] {@code internalDataGetStr} must not be null.
      */
     @Override
-    public String codegen(String returnPbVar, String dataGetStr) {
+    public String codegen(String returnPbVarName, String internalDataGetStr) {
         switch (type.getTypeRoot()) {
             case INTEGER:
             case BIGINT:
             case FLOAT:
             case DOUBLE:
             case BOOLEAN:
-                return returnPbVar + " = " + dataGetStr + ";";
+                return returnPbVarName + " = " + internalDataGetStr + ";";
             case VARCHAR:
             case CHAR:
                 PbCodegenAppender appender = new PbCodegenAppender();
                 int uid = PbCodegenVarId.getInstance().getAndIncrement();
                 String fromVar = "fromVar" + uid;
                 appender.appendLine("String " + fromVar);
-                appender.appendLine(fromVar + " = " + dataGetStr + ".toString()");
+                appender.appendLine(fromVar + " = " + internalDataGetStr + ".toString()");
                 if (fd.getJavaType() == JavaType.ENUM) {
                     String enumValueDescVar = "enumValueDesc" + uid;
                     String enumTypeStr = PbFormatUtils.getFullJavaName(fd.getEnumType());
@@ -69,11 +68,13 @@ public class PbCodegenSimpleSerializer implements PbCodegenSerializer {
                                     + fromVar
                                     + ")");
                     appender.appendSegment("if(null == " + enumValueDescVar + "){");
-                    appender.appendLine(returnPbVar + " = " + enumTypeStr + ".values()[0]");
+                    // choose the first enum element as default value if such value is invalid enum
+                    appender.appendLine(returnPbVarName + " = " + enumTypeStr + ".values()[0]");
                     appender.appendSegment("}");
                     appender.appendSegment("else{");
+                    // choose the exact enum value
                     appender.appendLine(
-                            returnPbVar
+                            returnPbVarName
                                     + " = "
                                     + enumTypeStr
                                     + ".valueOf("
@@ -81,12 +82,12 @@ public class PbCodegenSimpleSerializer implements PbCodegenSerializer {
                                     + ")");
                     appender.appendLine("}");
                 } else {
-                    appender.appendLine(returnPbVar + " = " + fromVar);
+                    appender.appendLine(returnPbVarName + " = " + fromVar);
                 }
                 return appender.code();
             case VARBINARY:
             case BINARY:
-                return returnPbVar + " = ByteString.copyFrom(" + dataGetStr + ");";
+                return returnPbVarName + " = ByteString.copyFrom(" + internalDataGetStr + ");";
             default:
                 throw new IllegalArgumentException("Unsupported data type in schema: " + type);
         }

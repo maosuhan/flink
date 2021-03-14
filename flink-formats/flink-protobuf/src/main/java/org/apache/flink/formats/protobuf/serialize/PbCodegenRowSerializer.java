@@ -31,6 +31,7 @@ import com.google.protobuf.Descriptors;
 
 import java.util.List;
 
+/** Serializer to convert flink row type data to proto row type object. */
 public class PbCodegenRowSerializer implements PbCodegenSerializer {
     private List<Descriptors.FieldDescriptor> fds;
     private Descriptors.Descriptor descriptor;
@@ -43,14 +44,15 @@ public class PbCodegenRowSerializer implements PbCodegenSerializer {
     }
 
     @Override
-    public String codegen(String returnVarName, String rowFieldGetStr) throws PbCodegenException {
+    public String codegen(String returnPbVarName, String internalDataGetStr)
+            throws PbCodegenException {
         PbCodegenVarId varUid = PbCodegenVarId.getInstance();
         int uid = varUid.getAndIncrement();
         PbCodegenAppender appender = new PbCodegenAppender();
         String rowDataVar = "rowData" + uid;
         String pbMessageTypeStr = PbFormatUtils.getFullJavaName(descriptor);
         String messageBuilderVar = "messageBuilder" + uid;
-        appender.appendLine("RowData " + rowDataVar + " = " + rowFieldGetStr);
+        appender.appendLine("RowData " + rowDataVar + " = " + internalDataGetStr);
         appender.appendLine(
                 pbMessageTypeStr
                         + ".Builder "
@@ -73,6 +75,8 @@ public class PbCodegenRowSerializer implements PbCodegenSerializer {
             }
             String strongCamelFieldName = PbFormatUtils.getStrongCamelCaseJsonName(fieldName);
 
+            // Only set non-null element of flink row to proto object. The real value in proto
+            // result depends on protobuf implementation.
             appender.appendSegment("if(!" + rowDataVar + ".isNullAt(" + index + ")){");
             appender.appendLine(elementPbTypeStr + " " + elementPbVar);
             String subRowGetCode =
@@ -110,7 +114,7 @@ public class PbCodegenRowSerializer implements PbCodegenSerializer {
             appender.appendSegment("}");
             index += 1;
         }
-        appender.appendLine(returnVarName + " = " + messageBuilderVar + ".build()");
+        appender.appendLine(returnPbVarName + " = " + messageBuilderVar + ".build()");
         return appender.code();
     }
 }

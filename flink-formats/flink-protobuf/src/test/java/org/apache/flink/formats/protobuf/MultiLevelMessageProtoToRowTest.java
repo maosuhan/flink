@@ -29,6 +29,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+/** Test conversion of multiple level of proto nested message data to flink internal data. */
 public class MultiLevelMessageProtoToRowTest {
     @Test
     public void testMessage() throws Exception {

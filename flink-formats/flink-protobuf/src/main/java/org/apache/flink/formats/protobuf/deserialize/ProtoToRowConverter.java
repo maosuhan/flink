@@ -42,6 +42,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * {@link ProtoToRowConverter} can convert binary protobuf message data to flink row data by codegen
+ * process.
+ */
 public class ProtoToRowConverter {
     private static final Logger LOG = LoggerFactory.getLogger(ProtoToRowConverter.class);
     private ScriptEvaluator se;

@@ -27,6 +27,7 @@ import org.apache.flink.table.types.logical.RowType;
 
 import com.google.protobuf.Descriptors;
 
+/** Codegen factory class which return {@link PbCodegenSerializer} of different data type. */
 public class PbCodegenSerializeFactory {
     public static PbCodegenSerializer getPbCodegenSer(
             Descriptors.FieldDescriptor fd, LogicalType type) throws PbCodegenException {

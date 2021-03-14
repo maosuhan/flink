@@ -33,6 +33,10 @@ import org.apache.flink.table.factories.SerializationFormatFactory;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Table format factory for providing configured instances of Protobuf to RowData {@link
+ * SerializationSchema} and {@link DeserializationSchema}.
+ */
 public class PbFormatFactory implements DeserializationFormatFactory, SerializationFormatFactory {
 
     public static final String IDENTIFIER = "protobuf";

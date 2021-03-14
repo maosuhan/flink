@@ -32,7 +32,11 @@ import static org.apache.flink.formats.protobuf.ProtobufTestHelper.mapOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class RowToNullProtoBytesTest {
+/**
+ * Test conversion of null values from flink internal data to proto data. Proto data does not permit
+ * null values in array/map data.
+ */
+public class NullRowToProtoTest {
     @Test
     public void testSimple() throws Exception {
         RowData row =

@@ -30,6 +30,20 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+/**
+ * Test class for below case
+ *
+ * <PRE>
+ * syntax = "proto2";
+ * package org.apache.flink.formats.protobuf.testproto;
+ * option java_package = "org.apache.flink.formats.protobuf.testproto";
+ * option java_outer_classname = "SimpleTestOuterMultiProto";
+ * option java_multiple_files = true;
+ * message SimpleTestOuterMulti {
+ * </PRE>
+ *
+ * <p>This is valid proto definition.
+ */
 public class OuterMultiProtoToRowTest {
     @Test
     public void testSimple() throws Exception {

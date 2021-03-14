@@ -18,6 +18,7 @@
 
 package org.apache.flink.formats.protobuf;
 
+/** Exception represents codegen error in row and proto conversion which is probably a bug. */
 public class PbCodegenException extends Exception {
     public PbCodegenException() {}
 

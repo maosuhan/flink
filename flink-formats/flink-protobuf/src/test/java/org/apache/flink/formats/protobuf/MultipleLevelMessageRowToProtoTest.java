@@ -29,7 +29,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-public class RowToMultipleLevelMessageProtoBytesTest {
+/** Test conversion of flink internal nested row data to proto data. */
+public class MultipleLevelMessageRowToProtoTest {
     @Test
     public void testMultipleLevelMessage() throws Exception {
         RowData subSubRow = GenericRowData.of(1, 2L);

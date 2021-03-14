@@ -52,7 +52,6 @@ public class PbRowTypeInformation {
 
     public static LogicalType generateFieldTypeInformation(FieldDescriptor field) {
         JavaType fieldType = field.getJavaType();
-
         LogicalType type;
         if (fieldType.equals(JavaType.MESSAGE)) {
             if (field.isMapField()) {
