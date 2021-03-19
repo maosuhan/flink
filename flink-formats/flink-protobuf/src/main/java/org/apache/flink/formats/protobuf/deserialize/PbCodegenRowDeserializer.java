@@ -22,9 +22,7 @@ import org.apache.flink.formats.protobuf.PbCodegenAppender;
 import org.apache.flink.formats.protobuf.PbCodegenException;
 import org.apache.flink.formats.protobuf.PbCodegenVarId;
 import org.apache.flink.formats.protobuf.PbFormatUtils;
-import org.apache.flink.table.types.logical.ArrayType;
 import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.MapType;
 import org.apache.flink.table.types.logical.RowType;
 
 import com.google.protobuf.Descriptors.Descriptor;
@@ -78,13 +76,13 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
                         isMessageNonEmptyStr(
                                 pbMessageVar,
                                 strongCamelFieldName,
-                                elementFd,
-                                isListOrMap(subType));
+                                PbFormatUtils.isRepeatedType(subType));
                 appender.appendSegment("if(" + isMessageNonEmptyStr + "){");
             }
             String elementMessageGetStr =
                     pbMessageElementGetStr(
-                            pbMessageVar, strongCamelFieldName, elementFd, isListOrMap(subType));
+                            pbMessageVar, strongCamelFieldName, elementFd,
+                            PbFormatUtils.isArrayType(subType));
             String code = codegen.codegen(elementDataVar, elementMessageGetStr);
             appender.appendSegment(code);
             if (!readDefaultValues) {
@@ -98,11 +96,11 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
     }
 
     private String pbMessageElementGetStr(
-            String message, String fieldName, FieldDescriptor fd, boolean isRepeated) {
+            String message, String fieldName, FieldDescriptor fd, boolean isList) {
         if (fd.isMapField()) {
             // map
             return message + ".get" + fieldName + "Map()";
-        } else if (isRepeated) {
+        } else if (isList) {
             // list
             return message + ".get" + fieldName + "List()";
         } else {
@@ -111,16 +109,12 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
     }
 
     private String isMessageNonEmptyStr(
-            String message, String fieldName, FieldDescriptor fd, boolean isListOrMap) {
+            String message, String fieldName, boolean isListOrMap) {
         if (isListOrMap) {
             return message + ".get" + fieldName + "Count() > 0";
         } else {
             // proto syntax class do not have hasName() interface
             return message + ".has" + fieldName + "()";
         }
-    }
-
-    private boolean isListOrMap(LogicalType type) {
-        return type instanceof MapType || type instanceof ArrayType;
     }
 }

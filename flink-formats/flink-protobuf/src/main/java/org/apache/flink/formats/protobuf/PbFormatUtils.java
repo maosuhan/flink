@@ -18,7 +18,9 @@
 
 package org.apache.flink.formats.protobuf;
 
+import org.apache.flink.table.types.logical.ArrayType;
 import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.MapType;
 
 import com.google.protobuf.Descriptors;
 
@@ -132,5 +134,13 @@ public class PbFormatUtils {
         } else {
             return enumDescriptor.getFullName();
         }
+    }
+
+    public static boolean isRepeatedType(LogicalType type) {
+        return type instanceof MapType || type instanceof ArrayType;
+    }
+
+    public static boolean isArrayType(LogicalType type) {
+        return type instanceof ArrayType;
     }
 }
