@@ -81,7 +81,9 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
             }
             String elementMessageGetStr =
                     pbMessageElementGetStr(
-                            pbMessageVar, strongCamelFieldName, elementFd,
+                            pbMessageVar,
+                            strongCamelFieldName,
+                            elementFd,
                             PbFormatUtils.isArrayType(subType));
             String code = codegen.codegen(elementDataVar, elementMessageGetStr);
             appender.appendSegment(code);
@@ -108,8 +110,7 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
         }
     }
 
-    private String isMessageNonEmptyStr(
-            String message, String fieldName, boolean isListOrMap) {
+    private String isMessageNonEmptyStr(String message, String fieldName, boolean isListOrMap) {
         if (isListOrMap) {
             return message + ".get" + fieldName + "Count() > 0";
         } else {

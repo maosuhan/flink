@@ -68,8 +68,7 @@ public class PbCodegenRowSerializer implements PbCodegenSerializer {
             } else {
                 elementPbTypeStr =
                         PbCodegenUtils.getTypeStrFromProto(
-                                elementFd,
-                                PbFormatUtils.isArrayType(subType));
+                                elementFd, PbFormatUtils.isArrayType(subType));
             }
             String strongCamelFieldName = PbFormatUtils.getStrongCamelCaseJsonName(fieldName);
 
