@@ -43,7 +43,7 @@ public class RepeatedRowToProtoTest {
                         0.01,
                         StringData.fromString("hello"));
 
-        RowType rowType = PbRowTypeInformation.generateRowType(RepeatedTest.getDescriptor());
+        RowType rowType = PbRowTypeInformationUtil.generateRowType(RepeatedTest.getDescriptor());
         row = ProtobufTestHelper.validateRow(row, rowType);
 
         PbRowDataSerializationSchema serializationSchema =
@@ -68,7 +68,7 @@ public class RepeatedRowToProtoTest {
                         0.01,
                         StringData.fromString("hello"));
 
-        RowType rowType = PbRowTypeInformation.generateRowType(RepeatedTest.getDescriptor());
+        RowType rowType = PbRowTypeInformationUtil.generateRowType(RepeatedTest.getDescriptor());
         row = ProtobufTestHelper.validateRow(row, rowType);
 
         PbRowDataSerializationSchema serializationSchema =

@@ -36,7 +36,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 
 /** Generate Row type information according to pb descriptors. */
-public class PbRowTypeInformation {
+public class PbRowTypeInformationUtil {
     public static RowType generateRowType(Descriptors.Descriptor root) {
         int size = root.getFields().size();
         LogicalType[] types = new LogicalType[size];

@@ -28,8 +28,8 @@ import com.google.protobuf.Descriptors;
 
 /** Serializer to convert flink array type data to proto array type object. */
 public class PbCodegenArraySerializer implements PbCodegenSerializer {
-    private Descriptors.FieldDescriptor fd;
-    private LogicalType elementType;
+    private final Descriptors.FieldDescriptor fd;
+    private final LogicalType elementType;
 
     public PbCodegenArraySerializer(Descriptors.FieldDescriptor fd, LogicalType elementType) {
         this.fd = fd;

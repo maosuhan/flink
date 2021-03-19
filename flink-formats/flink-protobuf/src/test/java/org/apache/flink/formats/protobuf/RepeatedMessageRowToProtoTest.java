@@ -39,7 +39,8 @@ public class RepeatedMessageRowToProtoTest {
         ArrayData tmp = new GenericArrayData(new Object[] {subRow, subRow2});
         RowData row = GenericRowData.of(tmp);
 
-        RowType rowType = PbRowTypeInformation.generateRowType(RepeatedMessageTest.getDescriptor());
+        RowType rowType =
+                PbRowTypeInformationUtil.generateRowType(RepeatedMessageTest.getDescriptor());
         row = ProtobufTestHelper.validateRow(row, rowType);
 
         PbRowDataSerializationSchema serializationSchema =

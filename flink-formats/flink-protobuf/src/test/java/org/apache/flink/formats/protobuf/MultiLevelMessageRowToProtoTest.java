@@ -30,7 +30,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 /** Test conversion of flink internal nested row data to proto data. */
-public class MultipleLevelMessageRowToProtoTest {
+public class MultiLevelMessageRowToProtoTest {
     @Test
     public void testMultipleLevelMessage() throws Exception {
         RowData subSubRow = GenericRowData.of(1, 2L);
@@ -38,7 +38,7 @@ public class MultipleLevelMessageRowToProtoTest {
         RowData row = GenericRowData.of(1, 2L, false, subRow);
 
         RowType rowType =
-                PbRowTypeInformation.generateRowType(MultipleLevelMessageTest.getDescriptor());
+                PbRowTypeInformationUtil.generateRowType(MultipleLevelMessageTest.getDescriptor());
         row = ProtobufTestHelper.validateRow(row, rowType);
 
         PbRowDataSerializationSchema serializationSchema =

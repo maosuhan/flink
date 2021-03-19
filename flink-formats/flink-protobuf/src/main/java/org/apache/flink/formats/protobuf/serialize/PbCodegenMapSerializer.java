@@ -30,8 +30,8 @@ import com.google.protobuf.Descriptors;
 
 /** Serializer to convert flink map type data to proto map type object. */
 public class PbCodegenMapSerializer implements PbCodegenSerializer {
-    private Descriptors.FieldDescriptor fd;
-    private MapType mapType;
+    private final Descriptors.FieldDescriptor fd;
+    private final MapType mapType;
 
     public PbCodegenMapSerializer(Descriptors.FieldDescriptor fd, MapType mapType) {
         this.fd = fd;

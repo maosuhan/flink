@@ -24,4 +24,5 @@ public class PbConstant {
     public static final String PB_METHOD_PARSE_FROM = "parseFrom";
     public static final String PB_MAP_KEY_NAME = "key";
     public static final String PB_MAP_VALUE_NAME = "value";
+    public static final String PB_OUTER_CLASS_SUFFIX = "OuterClass";
 }

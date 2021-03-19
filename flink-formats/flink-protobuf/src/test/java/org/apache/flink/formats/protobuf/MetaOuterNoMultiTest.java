@@ -19,6 +19,7 @@
 package org.apache.flink.formats.protobuf;
 
 import org.apache.flink.formats.protobuf.deserialize.PbRowDataDeserializationSchema;
+import org.apache.flink.formats.protobuf.serialize.PbRowDataSerializationSchema;
 import org.apache.flink.formats.protobuf.testproto.SimpleTestOuterNomultiProto;
 import org.apache.flink.table.runtime.typeutils.InternalTypeInfo;
 import org.apache.flink.table.types.logical.RowType;
@@ -36,13 +37,13 @@ import org.junit.Test;
  * message SimpleTestOuterNomulti {
  * </PRE>
  *
- * <p>This is invalid proto definition and {@link IllegalArgumentException} should throw.
+ * <p>It is valid proto definition.
  */
-public class OuterNoMultiProtoToRowTest {
-    @Test(expected = IllegalArgumentException.class)
+public class MetaOuterNoMultiTest {
+    @Test
     public void testSimple() {
         RowType rowType =
-                PbRowTypeInformation.generateRowType(
+                PbRowTypeInformationUtil.generateRowType(
                         SimpleTestOuterNomultiProto.SimpleTestOuterNomulti.getDescriptor());
         new PbRowDataDeserializationSchema(
                 rowType,
@@ -50,5 +51,9 @@ public class OuterNoMultiProtoToRowTest {
                 SimpleTestOuterNomultiProto.SimpleTestOuterNomulti.class.getName(),
                 false,
                 false);
+
+        new PbRowDataSerializationSchema(
+                rowType, SimpleTestOuterNomultiProto.SimpleTestOuterNomulti.class.getName());
+        // validation success
     }
 }

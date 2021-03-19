@@ -35,7 +35,7 @@ import static org.junit.Assert.assertTrue;
 public class SimpleProtoToRowTest {
     @Test
     public void testSimple() throws Exception {
-        RowType rowType = PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor());
+        RowType rowType = PbRowTypeInformationUtil.generateRowType(SimpleTest.getDescriptor());
         PbRowDataDeserializationSchema deserializationSchema =
                 new PbRowDataDeserializationSchema(
                         rowType,
@@ -60,7 +60,7 @@ public class SimpleProtoToRowTest {
         RowData row = deserializationSchema.deserialize(simple.toByteArray());
         row =
                 ProtobufTestHelper.validateRow(
-                        row, PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor()));
+                        row, PbRowTypeInformationUtil.generateRowType(SimpleTest.getDescriptor()));
 
         assertEquals(9, row.getArity());
         assertEquals(1, row.getInt(0));
@@ -76,7 +76,7 @@ public class SimpleProtoToRowTest {
 
     @Test
     public void testNotExistsValueIgnoringDefault() throws Exception {
-        RowType rowType = PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor());
+        RowType rowType = PbRowTypeInformationUtil.generateRowType(SimpleTest.getDescriptor());
         PbRowDataDeserializationSchema deserializationSchema =
                 new PbRowDataDeserializationSchema(
                         rowType,
@@ -103,7 +103,7 @@ public class SimpleProtoToRowTest {
 
     @Test
     public void testDefaultValues() throws Exception {
-        RowType rowType = PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor());
+        RowType rowType = PbRowTypeInformationUtil.generateRowType(SimpleTest.getDescriptor());
         PbRowDataDeserializationSchema deserializationSchema =
                 new PbRowDataDeserializationSchema(
                         rowType,

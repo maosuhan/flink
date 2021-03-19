@@ -28,8 +28,8 @@ import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 
 /** Serializer to convert flink simple type data to proto simple type object. */
 public class PbCodegenSimpleSerializer implements PbCodegenSerializer {
-    private Descriptors.FieldDescriptor fd;
-    private LogicalType type;
+    private final Descriptors.FieldDescriptor fd;
+    private final LogicalType type;
 
     public PbCodegenSimpleSerializer(Descriptors.FieldDescriptor fd, LogicalType type) {
         this.fd = fd;

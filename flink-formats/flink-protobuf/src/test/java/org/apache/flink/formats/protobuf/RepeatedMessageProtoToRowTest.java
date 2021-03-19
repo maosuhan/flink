@@ -33,7 +33,8 @@ import static org.junit.Assert.assertEquals;
 public class RepeatedMessageProtoToRowTest {
     @Test
     public void testRepeatedMessage() throws Exception {
-        RowType rowType = PbRowTypeInformation.generateRowType(RepeatedMessageTest.getDescriptor());
+        RowType rowType =
+                PbRowTypeInformationUtil.generateRowType(RepeatedMessageTest.getDescriptor());
         PbRowDataDeserializationSchema deserializationSchema =
                 new PbRowDataDeserializationSchema(
                         rowType,

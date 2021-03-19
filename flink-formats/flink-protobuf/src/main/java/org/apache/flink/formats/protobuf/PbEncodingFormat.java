@@ -29,7 +29,7 @@ import org.apache.flink.table.types.logical.RowType;
 
 /** {@link EncodingFormat} for protobuf encoding. */
 public class PbEncodingFormat implements EncodingFormat<SerializationSchema<RowData>> {
-    private String messageClassName;
+    private final String messageClassName;
 
     public PbEncodingFormat(String messageClassName) {
         this.messageClassName = messageClassName;

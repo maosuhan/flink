@@ -22,7 +22,7 @@ import com.google.protobuf.Descriptors;
 
 /** Deserializer to convert proto simple type object to flink simple type data. */
 public class PbCodegenSimpleDeserializer implements PbCodegenDeserializer {
-    private Descriptors.FieldDescriptor fd;
+    private final Descriptors.FieldDescriptor fd;
 
     public PbCodegenSimpleDeserializer(Descriptors.FieldDescriptor fd) {
         this.fd = fd;
