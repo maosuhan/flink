@@ -23,7 +23,6 @@ import org.apache.flink.formats.protobuf.PbCodegenException;
 import org.apache.flink.formats.protobuf.PbCodegenUtils;
 import org.apache.flink.formats.protobuf.PbCodegenVarId;
 import org.apache.flink.formats.protobuf.PbFormatUtils;
-import org.apache.flink.table.types.logical.ArrayType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.LogicalTypeRoot;
 import org.apache.flink.table.types.logical.RowType;
@@ -68,7 +67,9 @@ public class PbCodegenRowSerializer implements PbCodegenSerializer {
                 elementPbTypeStr = PbCodegenUtils.getTypeStrFromProto(elementFd, false);
             } else {
                 elementPbTypeStr =
-                        PbCodegenUtils.getTypeStrFromProto(elementFd, subType instanceof ArrayType);
+                        PbCodegenUtils.getTypeStrFromProto(
+                                elementFd,
+                                PbFormatUtils.isArrayType(subType));
             }
             String strongCamelFieldName = PbFormatUtils.getStrongCamelCaseJsonName(fieldName);
 
