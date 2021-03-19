@@ -25,7 +25,10 @@ import com.google.protobuf.Descriptors;
 /** Protobuf function util. */
 public class PbFormatUtils {
 
-    // protobuf code has a bug that, f_abc_7d will be convert to fAbc7d, but actually we need fAbc7D
+    /**
+     * protobuf code has a bug that, f_abc_7d will be convert to fAbc7d in {@code
+     * com.google.protobuf.Descriptors.FileDescriptor.getJsonName()}, but actually we need fAbc7D.
+     */
     public static String fieldNameToJsonName(String name) {
         final int length = name.length();
         StringBuilder result = new StringBuilder(length);
@@ -35,8 +38,6 @@ public class PbFormatUtils {
             if (ch == '_') {
                 isNextUpperCase = true;
             } else if (isNextUpperCase) {
-                // This closely matches the logic for ASCII characters in:
-                // http://google3/google/protobuf/descriptor.cc?l=249-251&rcl=228891689
                 if ('a' <= ch && ch <= 'z') {
                     ch = (char) (ch - 'a' + 'A');
                     isNextUpperCase = false;
@@ -47,6 +48,43 @@ public class PbFormatUtils {
             }
         }
         return result.toString();
+    }
+
+    public static String getFullJavaName(Descriptors.Descriptor descriptor) {
+        String javaPackageName = descriptor.getFile().getOptions().getJavaPackage();
+        if (descriptor.getFile().getOptions().getJavaMultipleFiles()) {
+            // multiple_files=true
+            if (null != descriptor.getContainingType()) {
+                // nested type
+                String parentJavaFullName = getFullJavaName(descriptor.getContainingType());
+                return parentJavaFullName + "." + descriptor.getName();
+            } else {
+                // top level message
+                return javaPackageName + "." + descriptor.getName();
+            }
+        } else {
+            // multiple_files=false
+            if (null != descriptor.getContainingType()) {
+                // nested type
+                String parentJavaFullName = getFullJavaName(descriptor.getContainingType());
+                return parentJavaFullName + "." + descriptor.getName();
+            } else {
+                // top level message
+                if (!descriptor.getFile().getOptions().hasJavaOuterClassname()) {
+                    // user do not define outer class name in proto file
+                    return javaPackageName
+                            + "."
+                            + descriptor.getName()
+                            + PbConstant.PB_OUTER_CLASS_SUFFIX
+                            + "."
+                            + descriptor.getName();
+                } else {
+                    String outerName = descriptor.getFile().getOptions().getJavaOuterClassname();
+                    // user define outer class name in proto file
+                    return javaPackageName + "." + outerName + "." + descriptor.getName();
+                }
+            }
+        }
     }
 
     public static boolean isSimpleType(LogicalType type) {
@@ -83,14 +121,6 @@ public class PbFormatUtils {
         } catch (Exception y) {
             throw new IllegalArgumentException(
                     String.format("get %s descriptors error!", className), y);
-        }
-    }
-
-    public static String getFullJavaName(Descriptors.Descriptor descriptor) {
-        if (null != descriptor.getContainingType()) {
-            return getFullJavaName(descriptor.getContainingType()) + "." + descriptor.getName();
-        } else {
-            return descriptor.getFullName();
         }
     }
 

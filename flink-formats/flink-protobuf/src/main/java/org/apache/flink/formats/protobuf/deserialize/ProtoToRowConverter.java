@@ -48,8 +48,8 @@ import java.util.Map;
  */
 public class ProtoToRowConverter {
     private static final Logger LOG = LoggerFactory.getLogger(ProtoToRowConverter.class);
-    private ScriptEvaluator se;
-    private Method parseFromMethod;
+    private final ScriptEvaluator se;
+    private final Method parseFromMethod;
 
     public ProtoToRowConverter(String messageClassName, RowType rowType, boolean readDefaultValues)
             throws PbCodegenException {

@@ -28,10 +28,9 @@ import com.google.protobuf.Descriptors;
 
 /** Deserializer to convert proto array type object to flink array type data. */
 public class PbCodegenArrayDeserializer implements PbCodegenDeserializer {
-    private Descriptors.FieldDescriptor fd;
-    private LogicalType elementType;
-    private boolean readDefaultValues;
-    private PbCodegenAppender appender = new PbCodegenAppender();
+    private final Descriptors.FieldDescriptor fd;
+    private final LogicalType elementType;
+    private final boolean readDefaultValues;
 
     public PbCodegenArrayDeserializer(
             Descriptors.FieldDescriptor fd, LogicalType elementType, boolean readDefaultValues) {
@@ -45,6 +44,7 @@ public class PbCodegenArrayDeserializer implements PbCodegenDeserializer {
             throws PbCodegenException {
         // The type of messageGetStr is a native List object,
         // it should be converted to ArrayData of flink internal type.
+        PbCodegenAppender appender = new PbCodegenAppender();
         PbCodegenVarId varUid = PbCodegenVarId.getInstance();
         int uid = varUid.getAndIncrement();
         String protoTypeStr = PbCodegenUtils.getTypeStrFromProto(fd, false);

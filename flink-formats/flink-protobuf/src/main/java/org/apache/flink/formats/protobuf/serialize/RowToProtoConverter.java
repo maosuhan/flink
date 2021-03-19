@@ -45,7 +45,7 @@ import java.util.Map;
  */
 public class RowToProtoConverter {
     private static final Logger LOG = LoggerFactory.getLogger(ProtoToRowConverter.class);
-    private ScriptEvaluator se;
+    private final ScriptEvaluator se;
 
     public RowToProtoConverter(String messageClassName, RowType rowType) throws PbCodegenException {
         try {

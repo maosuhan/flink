@@ -33,7 +33,7 @@ import static org.junit.Assert.assertTrue;
 public class OneofProtoToRowTest {
     @Test
     public void testSimple() throws Exception {
-        RowType rowType = PbRowTypeInformation.generateRowType(OneofTest.getDescriptor());
+        RowType rowType = PbRowTypeInformationUtil.generateRowType(OneofTest.getDescriptor());
         PbRowDataDeserializationSchema deserializationSchema =
                 new PbRowDataDeserializationSchema(
                         rowType,

@@ -29,33 +29,35 @@ import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.EnumMap;
+import java.util.EnumSet;
 
 /** Validation class to verify protobuf definition and flink DDL schema. */
 public class PbSchemaValidator {
     private Descriptors.Descriptor descriptor;
     private RowType rowType;
-    private Map<JavaType, List<LogicalTypeRoot>> typeMatchMap = new HashMap();
+
+    private static final EnumMap<JavaType, EnumSet<LogicalTypeRoot>> TYPE_MATCH_MAP =
+            new EnumMap(JavaType.class);
+
+    static {
+        TYPE_MATCH_MAP.put(JavaType.BOOLEAN, EnumSet.of(LogicalTypeRoot.BOOLEAN));
+        TYPE_MATCH_MAP.put(
+                JavaType.BYTE_STRING,
+                EnumSet.of(LogicalTypeRoot.BINARY, LogicalTypeRoot.VARBINARY));
+        TYPE_MATCH_MAP.put(JavaType.DOUBLE, EnumSet.of(LogicalTypeRoot.DOUBLE));
+        TYPE_MATCH_MAP.put(JavaType.FLOAT, EnumSet.of(LogicalTypeRoot.FLOAT));
+        TYPE_MATCH_MAP.put(
+                JavaType.ENUM, EnumSet.of(LogicalTypeRoot.VARCHAR, LogicalTypeRoot.CHAR));
+        TYPE_MATCH_MAP.put(
+                JavaType.STRING, EnumSet.of(LogicalTypeRoot.VARCHAR, LogicalTypeRoot.CHAR));
+        TYPE_MATCH_MAP.put(JavaType.INT, EnumSet.of(LogicalTypeRoot.INTEGER));
+        TYPE_MATCH_MAP.put(JavaType.LONG, EnumSet.of(LogicalTypeRoot.BIGINT));
+    }
 
     public PbSchemaValidator(Descriptors.Descriptor descriptor, RowType rowType) {
         this.descriptor = descriptor;
         this.rowType = rowType;
-        typeMatchMap.put(JavaType.BOOLEAN, Collections.singletonList(LogicalTypeRoot.BOOLEAN));
-        typeMatchMap.put(
-                JavaType.BYTE_STRING,
-                Arrays.asList(LogicalTypeRoot.BINARY, LogicalTypeRoot.VARBINARY));
-        typeMatchMap.put(JavaType.DOUBLE, Collections.singletonList(LogicalTypeRoot.DOUBLE));
-        typeMatchMap.put(JavaType.FLOAT, Collections.singletonList(LogicalTypeRoot.FLOAT));
-        typeMatchMap.put(
-                JavaType.ENUM, Arrays.asList(LogicalTypeRoot.VARCHAR, LogicalTypeRoot.CHAR));
-        typeMatchMap.put(
-                JavaType.STRING, Arrays.asList(LogicalTypeRoot.VARCHAR, LogicalTypeRoot.CHAR));
-        typeMatchMap.put(JavaType.INT, Collections.singletonList(LogicalTypeRoot.INTEGER));
-        typeMatchMap.put(JavaType.LONG, Collections.singletonList(LogicalTypeRoot.BIGINT));
     }
 
     public Descriptors.Descriptor getDescriptor() {
@@ -76,24 +78,13 @@ public class PbSchemaValidator {
 
     public void validate() {
         validateTypeMatch(descriptor, rowType);
-        if (!descriptor
-                .getFile()
-                .getOptions()
-                .getJavaPackage()
-                .equals(descriptor.getFile().getPackage())) {
-            throw new IllegalArgumentException(
-                    "java_package and package must be the same in proto definition");
-        }
-        if (!descriptor.getFile().getOptions().getJavaMultipleFiles()) {
-            throw new IllegalArgumentException("java_multiple_files must set to true");
-        }
     }
 
     /**
      * Validate type match of row type.
      *
-     * @param descriptor
-     * @param rowType
+     * @param descriptor the {@link Descriptors.Descriptor} of the protobuf object.
+     * @param rowType the corresponding {@link RowType} to the {@link Descriptors.Descriptor}
      */
     public void validateTypeMatch(Descriptors.Descriptor descriptor, RowType rowType) {
         rowType.getFields()
@@ -115,8 +106,8 @@ public class PbSchemaValidator {
     /**
      * Validate type match of general type.
      *
-     * @param fd
-     * @param logicalType
+     * @param fd the {@link Descriptors.Descriptor} of the protobuf object.
+     * @param logicalType the corresponding {@link LogicalType} to the {@link FieldDescriptor}
      */
     public void validateTypeMatch(FieldDescriptor fd, LogicalType logicalType) {
         if (!fd.isRepeated()) {
@@ -125,11 +116,19 @@ public class PbSchemaValidator {
                 validateSimpleType(fd, logicalType.getTypeRoot());
             } else {
                 // message type
+                if (!(logicalType instanceof RowType)) {
+                    throw new ValidationException(
+                            "Unexpected LogicalType: " + logicalType + ". It should be RowType");
+                }
                 validateTypeMatch(fd.getMessageType(), (RowType) logicalType);
             }
         } else {
             if (fd.isMapField()) {
                 // map type
+                if (!(logicalType instanceof MapType)) {
+                    throw new ValidationException(
+                            "Unexpected LogicalType: " + logicalType + ". It should be MapType");
+                }
                 MapType mapType = (MapType) logicalType;
                 validateSimpleType(
                         fd.getMessageType().findFieldByName(PbConstant.PB_MAP_KEY_NAME),
@@ -139,10 +138,21 @@ public class PbSchemaValidator {
                         mapType.getValueType());
             } else {
                 // array type
+                if (!(logicalType instanceof ArrayType)) {
+                    throw new ValidationException(
+                            "Unexpected LogicalType: " + logicalType + ". It should be ArrayType");
+                }
                 ArrayType arrayType = (ArrayType) logicalType;
                 if (fd.getJavaType() == JavaType.MESSAGE) {
                     // array message type
-                    validateTypeMatch(fd.getMessageType(), (RowType) arrayType.getElementType());
+                    LogicalType elementType = arrayType.getElementType();
+                    if (!(elementType instanceof RowType)) {
+                        throw new ValidationException(
+                                "Unexpected logicalType: "
+                                        + elementType
+                                        + ". It should be RowType");
+                    }
+                    validateTypeMatch(fd.getMessageType(), (RowType) elementType);
                 } else {
                     // array simple type
                     validateSimpleType(fd, arrayType.getElementType().getTypeRoot());
@@ -158,14 +168,14 @@ public class PbSchemaValidator {
      * @param logicalTypeRoot {@link LogicalTypeRoot} of row element
      */
     private void validateSimpleType(FieldDescriptor fd, LogicalTypeRoot logicalTypeRoot) {
-        if (!typeMatchMap.containsKey(fd.getJavaType())) {
+        if (!TYPE_MATCH_MAP.containsKey(fd.getJavaType())) {
             throw new ValidationException("Unsupported protobuf java type: " + fd.getJavaType());
         }
-        if (typeMatchMap.get(fd.getJavaType()).stream().noneMatch(x -> x == logicalTypeRoot)) {
+        if (TYPE_MATCH_MAP.get(fd.getJavaType()).stream().noneMatch(x -> x == logicalTypeRoot)) {
             throw new ValidationException(
                     "Protobuf field type does not match column type, "
                             + fd.getJavaType()
-                            + "(pb) is not compatible of "
+                            + "(protobuf) is not compatible of "
                             + logicalTypeRoot
                             + "(table DDL)");
         }

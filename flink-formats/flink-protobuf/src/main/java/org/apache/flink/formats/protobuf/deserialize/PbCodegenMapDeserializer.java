@@ -30,9 +30,9 @@ import com.google.protobuf.Descriptors;
 
 /** Deserializer to convert proto map type object to flink map type data. */
 public class PbCodegenMapDeserializer implements PbCodegenDeserializer {
-    private Descriptors.FieldDescriptor fd;
-    private MapType mapType;
-    private boolean readDefaultValues;
+    private final Descriptors.FieldDescriptor fd;
+    private final MapType mapType;
+    private final boolean readDefaultValues;
 
     public PbCodegenMapDeserializer(
             Descriptors.FieldDescriptor fd, MapType mapType, boolean readDefaultValues) {

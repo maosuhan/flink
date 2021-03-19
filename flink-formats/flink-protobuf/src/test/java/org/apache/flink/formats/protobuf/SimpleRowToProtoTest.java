@@ -47,7 +47,7 @@ public class SimpleRowToProtoTest {
                         StringData.fromString("IMAGES"),
                         1);
 
-        RowType rowType = PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor());
+        RowType rowType = PbRowTypeInformationUtil.generateRowType(SimpleTest.getDescriptor());
         row = ProtobufTestHelper.validateRow(row, rowType);
 
         PbRowDataSerializationSchema serializationSchema =
@@ -73,7 +73,7 @@ public class SimpleRowToProtoTest {
                 GenericRowData.of(
                         null, 2L, false, 0.1f, 0.01, StringData.fromString("hello"), null, null, 1);
 
-        RowType rowtype = PbRowTypeInformation.generateRowType(SimpleTest.getDescriptor());
+        RowType rowtype = PbRowTypeInformationUtil.generateRowType(SimpleTest.getDescriptor());
         row = ProtobufTestHelper.validateRow(row, rowtype);
 
         PbRowDataSerializationSchema serializationSchema =

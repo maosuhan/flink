@@ -22,7 +22,9 @@ import org.apache.flink.formats.protobuf.PbCodegenAppender;
 import org.apache.flink.formats.protobuf.PbCodegenException;
 import org.apache.flink.formats.protobuf.PbCodegenVarId;
 import org.apache.flink.formats.protobuf.PbFormatUtils;
+import org.apache.flink.table.types.logical.ArrayType;
 import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.MapType;
 import org.apache.flink.table.types.logical.RowType;
 
 import com.google.protobuf.Descriptors.Descriptor;
@@ -30,10 +32,9 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 
 /** Deserializer to convert proto message type object to flink row type data. */
 public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
-    private Descriptor descriptor;
-    private RowType rowType;
-    private boolean readDefaultValues;
-    private PbCodegenAppender appender = new PbCodegenAppender();
+    private final Descriptor descriptor;
+    private final RowType rowType;
+    private final boolean readDefaultValues;
 
     public PbCodegenRowDeserializer(
             Descriptor descriptor, RowType rowType, boolean readDefaultValues) {
@@ -47,6 +48,7 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
             throws PbCodegenException {
         // The type of messageGetStr is a native pb object,
         // it should be converted to RowData of flink internal type
+        PbCodegenAppender appender = new PbCodegenAppender();
         PbCodegenVarId varUid = PbCodegenVarId.getInstance();
         int uid = varUid.getAndIncrement();
         String pbMessageVar = "message" + uid;
@@ -73,34 +75,16 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
                 // only works in syntax=proto2 and readDefaultValues=false
                 // readDefaultValues must be true in pb3 mode
                 String isMessageNonEmptyStr =
-                        isMessageNonEmptyStr(pbMessageVar, strongCamelFieldName, elementFd);
+                        isMessageNonEmptyStr(
+                                pbMessageVar,
+                                strongCamelFieldName,
+                                elementFd,
+                                isListOrMap(subType));
                 appender.appendSegment("if(" + isMessageNonEmptyStr + "){");
             }
             String elementMessageGetStr =
-                    pbMessageElementGetStr(pbMessageVar, strongCamelFieldName, elementFd);
-            if (!elementFd.isRepeated()) {
-                // field is not map or array
-                // this step is needed to convert primitive type to boxed type to unify the object
-                // interface
-                switch (elementFd.getJavaType()) {
-                    case INT:
-                        elementMessageGetStr = "Integer.valueOf(" + elementMessageGetStr + ")";
-                        break;
-                    case LONG:
-                        elementMessageGetStr = "Long.valueOf(" + elementMessageGetStr + ")";
-                        break;
-                    case FLOAT:
-                        elementMessageGetStr = "Float.valueOf(" + elementMessageGetStr + ")";
-                        break;
-                    case DOUBLE:
-                        elementMessageGetStr = "Double.valueOf(" + elementMessageGetStr + ")";
-                        break;
-                    case BOOLEAN:
-                        elementMessageGetStr = "Boolean.valueOf(" + elementMessageGetStr + ")";
-                        break;
-                }
-            }
-
+                    pbMessageElementGetStr(
+                            pbMessageVar, strongCamelFieldName, elementFd, isListOrMap(subType));
             String code = codegen.codegen(elementDataVar, elementMessageGetStr);
             appender.appendSegment(code);
             if (!readDefaultValues) {
@@ -113,22 +97,30 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
         return appender.code();
     }
 
-    private String pbMessageElementGetStr(String message, String fieldName, FieldDescriptor fd) {
+    private String pbMessageElementGetStr(
+            String message, String fieldName, FieldDescriptor fd, boolean isRepeated) {
         if (fd.isMapField()) {
+            // map
             return message + ".get" + fieldName + "Map()";
-        } else if (fd.isRepeated()) {
+        } else if (isRepeated) {
+            // list
             return message + ".get" + fieldName + "List()";
         } else {
             return message + ".get" + fieldName + "()";
         }
     }
 
-    private String isMessageNonEmptyStr(String message, String fieldName, FieldDescriptor fd) {
-        if (fd.isRepeated()) {
+    private String isMessageNonEmptyStr(
+            String message, String fieldName, FieldDescriptor fd, boolean isListOrMap) {
+        if (isListOrMap) {
             return message + ".get" + fieldName + "Count() > 0";
         } else {
             // proto syntax class do not have hasName() interface
             return message + ".has" + fieldName + "()";
         }
+    }
+
+    private boolean isListOrMap(LogicalType type) {
+        return type instanceof MapType || type instanceof ArrayType;
     }
 }

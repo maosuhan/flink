@@ -18,7 +18,6 @@
 
 package org.apache.flink.formats.protobuf.deserialize;
 
-import org.apache.flink.annotation.PublicEvolving;
 import org.apache.flink.api.common.serialization.DeserializationSchema;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.formats.protobuf.PbCodegenException;
@@ -27,9 +26,6 @@ import org.apache.flink.formats.protobuf.PbSchemaValidator;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.logical.RowType;
 import org.apache.flink.util.FlinkRuntimeException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -44,11 +40,9 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
  *
  * <p>Failures during deserialization are forwarded as wrapped IOExceptions.
  */
-@PublicEvolving
 public class PbRowDataDeserializationSchema implements DeserializationSchema<RowData> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PbRowDataDeserializationSchema.class);
-    private static final long serialVersionUID = -4040917522067315718L;
+    private static final long serialVersionUID = 1L;
 
     private final RowType rowType;
     private final TypeInformation<RowData> resultTypeInfo;
@@ -65,7 +59,7 @@ public class PbRowDataDeserializationSchema implements DeserializationSchema<Row
             String messageClassName,
             boolean ignoreParseErrors,
             boolean readDefaultValues) {
-        checkNotNull(rowType, "Type information");
+        checkNotNull(rowType, "rowType cannot be null");
         this.rowType = rowType;
         this.resultTypeInfo = resultTypeInfo;
         this.messageClassName = messageClassName;
@@ -96,7 +90,6 @@ public class PbRowDataDeserializationSchema implements DeserializationSchema<Row
             if (ignoreParseErrors) {
                 return null;
             }
-            LOG.error("Failed to deserialize PB object.", t);
             throw new IOException("Failed to deserialize PB object.", t);
         }
     }

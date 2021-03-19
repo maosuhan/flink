@@ -69,7 +69,7 @@ public class PbCodegenUtils {
      * @return The returned code phrase will be used as java type str in codegen sections.
      * @throws PbCodegenException
      */
-    public static String getTypeStrFromProto(FieldDescriptor fd, boolean isRepeated)
+    public static String getTypeStrFromProto(FieldDescriptor fd, boolean isList)
             throws PbCodegenException {
         String typeStr;
         switch (fd.getJavaType()) {
@@ -116,7 +116,7 @@ public class PbCodegenUtils {
             default:
                 throw new PbCodegenException("do not support field type: " + fd.getJavaType());
         }
-        if (isRepeated) {
+        if (isList) {
             return "List<" + typeStr + ">";
         } else {
             return typeStr;

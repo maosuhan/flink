@@ -33,8 +33,8 @@ public interface PbCodegenSerializer {
      *     be used by outsider codegen environment. {@code returnPbVarName} should be protobuf
      *     object
      * @param internalDataGetStr may be a variable or expression. Current codegen environment can
-     *     use this literal name directly to access the input. {@code internalDataGetStr} should be
-     *     flink data object
+     *     use this literal name directly to access the input. {@code internalDataGetStr} is a value
+     *     coming from flink object.
      * @return The java code generated
      */
     String codegen(String returnPbVarName, String internalDataGetStr) throws PbCodegenException;

@@ -39,7 +39,7 @@ import static org.junit.Assert.assertFalse;
 public class Pb3ToRowTest {
     @Test
     public void testMessage() throws Exception {
-        RowType rowType = PbRowTypeInformation.generateRowType(Pb3Test.getDescriptor());
+        RowType rowType = PbRowTypeInformationUtil.generateRowType(Pb3Test.getDescriptor());
         PbRowDataDeserializationSchema deserializationSchema =
                 new PbRowDataDeserializationSchema(
                         rowType,
@@ -102,7 +102,7 @@ public class Pb3ToRowTest {
 
     @Test
     public void testDefaultValues() throws Exception {
-        RowType rowType = PbRowTypeInformation.generateRowType(Pb3Test.getDescriptor());
+        RowType rowType = PbRowTypeInformationUtil.generateRowType(Pb3Test.getDescriptor());
         PbRowDataDeserializationSchema deserializationSchema =
                 new PbRowDataDeserializationSchema(
                         rowType,

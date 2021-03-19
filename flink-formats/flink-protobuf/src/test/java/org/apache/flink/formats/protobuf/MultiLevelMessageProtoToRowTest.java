@@ -34,7 +34,7 @@ public class MultiLevelMessageProtoToRowTest {
     @Test
     public void testMessage() throws Exception {
         RowType rowType =
-                PbRowTypeInformation.generateRowType(MultipleLevelMessageTest.getDescriptor());
+                PbRowTypeInformationUtil.generateRowType(MultipleLevelMessageTest.getDescriptor());
         PbRowDataDeserializationSchema deserializationSchema =
                 new PbRowDataDeserializationSchema(
                         rowType,

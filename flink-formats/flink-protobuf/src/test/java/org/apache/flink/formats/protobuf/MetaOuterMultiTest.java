@@ -19,7 +19,8 @@
 package org.apache.flink.formats.protobuf;
 
 import org.apache.flink.formats.protobuf.deserialize.PbRowDataDeserializationSchema;
-import org.apache.flink.formats.protobuf.testproto.SimpleTestNoouterNomultiOuterClass;
+import org.apache.flink.formats.protobuf.serialize.PbRowDataSerializationSchema;
+import org.apache.flink.formats.protobuf.testproto.SimpleTestOuterMulti;
 import org.apache.flink.table.runtime.typeutils.InternalTypeInfo;
 import org.apache.flink.table.types.logical.RowType;
 
@@ -32,23 +33,26 @@ import org.junit.Test;
  * syntax = "proto2";
  * package org.apache.flink.formats.protobuf.testproto;
  * option java_package = "org.apache.flink.formats.protobuf.testproto";
- * message SimpleTestNoouterNomulti {
+ * option java_outer_classname = "SimpleTestOuterMultiProto";
+ * option java_multiple_files = true;
+ * message SimpleTestOuterMulti {
  * </PRE>
  *
- * <p>This is invalid proto definition and {@link IllegalArgumentException} should throw.
+ * <p>It is valid proto definition.
  */
-public class NoouterNomultiProtoToRowTest {
-    @Test(expected = IllegalArgumentException.class)
+public class MetaOuterMultiTest {
+    @Test
     public void testSimple() {
         RowType rowType =
-                PbRowTypeInformation.generateRowType(
-                        SimpleTestNoouterNomultiOuterClass.SimpleTestNoouterNomulti
-                                .getDescriptor());
+                PbRowTypeInformationUtil.generateRowType(SimpleTestOuterMulti.getDescriptor());
         new PbRowDataDeserializationSchema(
                 rowType,
                 InternalTypeInfo.of(rowType),
-                SimpleTestNoouterNomultiOuterClass.SimpleTestNoouterNomulti.class.getName(),
+                SimpleTestOuterMulti.class.getName(),
                 false,
                 false);
+
+        new PbRowDataSerializationSchema(rowType, SimpleTestOuterMulti.class.getName());
+        // validation success
     }
 }

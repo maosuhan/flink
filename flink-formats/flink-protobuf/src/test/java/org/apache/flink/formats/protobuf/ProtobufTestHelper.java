@@ -69,7 +69,7 @@ public class ProtobufTestHelper {
 
     public static byte[] rowToPbBytes(RowData row, Class messageClass) throws Exception {
         RowType rowType =
-                PbRowTypeInformation.generateRowType(
+                PbRowTypeInformationUtil.generateRowType(
                         org.apache.flink.formats.protobuf.PbFormatUtils.getDescriptor(
                                 messageClass.getName()));
         row = validateRow(row, rowType);
@@ -82,7 +82,7 @@ public class ProtobufTestHelper {
     public static byte[] rowToPbBytesWithoutValidation(RowData row, Class messageClass)
             throws Exception {
         RowType rowType =
-                PbRowTypeInformation.generateRowType(
+                PbRowTypeInformationUtil.generateRowType(
                         PbFormatUtils.getDescriptor(messageClass.getName()));
         PbRowDataSerializationSchema serializationSchema =
                 new PbRowDataSerializationSchema(rowType, messageClass.getName());

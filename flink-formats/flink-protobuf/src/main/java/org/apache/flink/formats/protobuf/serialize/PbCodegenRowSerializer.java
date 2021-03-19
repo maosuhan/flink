@@ -23,22 +23,19 @@ import org.apache.flink.formats.protobuf.PbCodegenException;
 import org.apache.flink.formats.protobuf.PbCodegenUtils;
 import org.apache.flink.formats.protobuf.PbCodegenVarId;
 import org.apache.flink.formats.protobuf.PbFormatUtils;
+import org.apache.flink.table.types.logical.ArrayType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.LogicalTypeRoot;
 import org.apache.flink.table.types.logical.RowType;
 
 import com.google.protobuf.Descriptors;
 
-import java.util.List;
-
 /** Serializer to convert flink row type data to proto row type object. */
 public class PbCodegenRowSerializer implements PbCodegenSerializer {
-    private List<Descriptors.FieldDescriptor> fds;
-    private Descriptors.Descriptor descriptor;
-    private RowType rowType;
+    private final Descriptors.Descriptor descriptor;
+    private final RowType rowType;
 
     public PbCodegenRowSerializer(Descriptors.Descriptor descriptor, RowType rowType) {
-        this.fds = descriptor.getFields();
         this.rowType = rowType;
         this.descriptor = descriptor;
     }
@@ -71,7 +68,7 @@ public class PbCodegenRowSerializer implements PbCodegenSerializer {
                 elementPbTypeStr = PbCodegenUtils.getTypeStrFromProto(elementFd, false);
             } else {
                 elementPbTypeStr =
-                        PbCodegenUtils.getTypeStrFromProto(elementFd, elementFd.isRepeated());
+                        PbCodegenUtils.getTypeStrFromProto(elementFd, subType instanceof ArrayType);
             }
             String strongCamelFieldName = PbFormatUtils.getStrongCamelCaseJsonName(fieldName);
 
