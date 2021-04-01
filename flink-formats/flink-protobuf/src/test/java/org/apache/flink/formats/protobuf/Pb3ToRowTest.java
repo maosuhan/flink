@@ -31,6 +31,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test conversion of proto3 data to flink internal data. Default values after conversion is tested
@@ -38,7 +39,7 @@ import static org.junit.Assert.assertFalse;
  */
 public class Pb3ToRowTest {
     @Test
-    public void testMessage() throws Exception {
+    public void testMessageWithAllNestedFieldsProvided() throws Exception {
         RowType rowType = PbRowTypeInformationUtil.generateRowType(Pb3Test.getDescriptor());
         PbRowDataDeserializationSchema deserializationSchema =
                 new PbRowDataDeserializationSchema(
@@ -101,7 +102,7 @@ public class Pb3ToRowTest {
     }
 
     @Test
-    public void testDefaultValues() throws Exception {
+    public void testNullFields() throws Exception {
         RowType rowType = PbRowTypeInformationUtil.generateRowType(Pb3Test.getDescriptor());
         PbRowDataDeserializationSchema deserializationSchema =
                 new PbRowDataDeserializationSchema(
@@ -116,17 +117,24 @@ public class Pb3ToRowTest {
         RowData row = deserializationSchema.deserialize(mapTest.toByteArray());
         row = ProtobufTestHelper.validateRow(row, rowType);
 
-        assertFalse(row.isNullAt(0));
-        assertFalse(row.isNullAt(1));
-        assertFalse(row.isNullAt(2));
-        assertFalse(row.isNullAt(3));
-        assertFalse(row.isNullAt(4));
-        assertFalse(row.isNullAt(5));
-        assertFalse(row.isNullAt(6));
-        assertFalse(row.isNullAt(7));
-        assertFalse(row.isNullAt(8));
-        assertFalse(row.isNullAt(9));
-        assertFalse(row.isNullAt(10));
+        assertFalse(row.isNullAt(0)); // int32 a = 1;
+        assertFalse(row.isNullAt(1)); // int64 b = 2;
+        assertFalse(row.isNullAt(2)); // string c = 3;
+        assertFalse(row.isNullAt(3)); // float d = 4;
+        assertFalse(row.isNullAt(4)); // double e = 5;
+        assertFalse(row.isNullAt(5)); // Corpus f = 6;
+
+        // missing protobuf nested fields are translated into flink null fields
+        assertTrue(row.isNullAt(6)); // InnerMessageTest g = 7;
+
+        // missing repeated field is translated into a flink null field
+        assertTrue(row.isNullAt(7)); // repeated InnerMessageTest h = 8;
+
+        assertFalse(row.isNullAt(8)); // bytes i = 9;
+
+        // missing map field is translated into a flink null field
+        assertTrue(row.isNullAt(9)); // map<string, string> map1 = 10;
+        assertTrue(row.isNullAt(10)); // map<string, InnerMessageTest> map2 = 11;
 
         assertEquals(0, row.getInt(0));
         assertEquals(0L, row.getLong(1));
@@ -135,15 +143,6 @@ public class Pb3ToRowTest {
         assertEquals(Double.valueOf(0.0d), Double.valueOf(row.getDouble(4)));
         assertEquals("UNIVERSAL", row.getString(5).toString());
 
-        RowData rowData = row.getRow(6, 2);
-        assertEquals(0, rowData.getInt(0));
-        assertEquals(0L, rowData.getLong(1));
-
-        assertEquals(0, row.getArray(7).size());
-
         assertEquals(0, row.getBinary(8).length);
-
-        assertEquals(0, row.getMap(9).size());
-        assertEquals(0, row.getMap(10).size());
     }
 }

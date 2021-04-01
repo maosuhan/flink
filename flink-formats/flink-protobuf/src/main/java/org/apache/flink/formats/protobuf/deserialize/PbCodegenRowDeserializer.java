@@ -70,23 +70,16 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
                             elementFd, subType, readDefaultValues);
             appender.appendLine("Object " + elementDataVar + " = null");
             if (!readDefaultValues) {
-                // only works in syntax=proto2 and readDefaultValues=false
-                // readDefaultValues must be true in pb3 mode
                 String isMessageNonEmptyStr =
-                        isMessageNonEmptyStr(
-                                pbMessageVar,
-                                strongCamelFieldName,
-                                PbFormatUtils.isRepeatedType(subType));
+                        isMessageNonEmptyStr(pbMessageVar, strongCamelFieldName, subType);
                 appender.appendSegment("if(" + isMessageNonEmptyStr + "){");
             }
+
             String elementMessageGetStr =
-                    pbMessageElementGetStr(
-                            pbMessageVar,
-                            strongCamelFieldName,
-                            elementFd,
-                            PbFormatUtils.isArrayType(subType));
+                    pbMessageElementGetStr(pbMessageVar, strongCamelFieldName, elementFd, subType);
             String code = codegen.codegen(elementDataVar, elementMessageGetStr);
             appender.appendSegment(code);
+
             if (!readDefaultValues) {
                 appender.appendSegment("}");
             }
@@ -98,11 +91,11 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
     }
 
     private String pbMessageElementGetStr(
-            String message, String fieldName, FieldDescriptor fd, boolean isList) {
+            String message, String fieldName, FieldDescriptor fd, LogicalType fieldLogicalType) {
         if (fd.isMapField()) {
             // map
             return message + ".get" + fieldName + "Map()";
-        } else if (isList) {
+        } else if (PbFormatUtils.isArrayType(fieldLogicalType)) {
             // list
             return message + ".get" + fieldName + "List()";
         } else {
@@ -110,12 +103,17 @@ public class PbCodegenRowDeserializer implements PbCodegenDeserializer {
         }
     }
 
-    private String isMessageNonEmptyStr(String message, String fieldName, boolean isListOrMap) {
-        if (isListOrMap) {
+    private String isMessageNonEmptyStr(
+            String message, String fieldName, LogicalType fieldLogicalType) {
+        if (PbFormatUtils.isRepeatedType(fieldLogicalType)) {
             return message + ".get" + fieldName + "Count() > 0";
-        } else {
-            // proto syntax class do not have hasName() interface
+        } else if (fieldLogicalType instanceof RowType) {
             return message + ".has" + fieldName + "()";
+        } else if (PbFormatUtils.isSimpleType(fieldLogicalType)) {
+            // simple types field are never considered empty in protobuf 3
+            return "true";
+        } else {
+            throw new UnsupportedOperationException("unrecognized field type: " + fieldLogicalType);
         }
     }
 }

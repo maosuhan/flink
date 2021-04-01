@@ -4,8 +4,24 @@ option java_package = "org.apache.flink.formats.protobuf.testproto";
 option java_multiple_files = true;
 
 message OneofTest {
-    oneof test_oneof{
-       int32 a = 1;
-       int32 b = 2;
-    }
+  oneof test_oneof{
+    int32 a = 1;
+    int32 b = 2;
+  }
+
+  oneof test_oneof_nested {
+    InnerA c = 3;
+    InnerB d = 4;
+  }
+
+  message InnerA {
+    required int32 ac = 1;
+    required int32 ad = 2;
+  }
+
+  message InnerB {
+    required int32 bc = 1;
+    required int32 bd = 2;
+  }
+
 }

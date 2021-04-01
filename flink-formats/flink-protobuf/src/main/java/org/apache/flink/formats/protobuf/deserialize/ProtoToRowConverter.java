@@ -31,7 +31,6 @@ import org.apache.flink.table.data.binary.BinaryStringData;
 import org.apache.flink.table.types.logical.RowType;
 
 import com.google.protobuf.Descriptors;
-import com.google.protobuf.Descriptors.FileDescriptor.Syntax;
 import org.codehaus.janino.ScriptEvaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +55,6 @@ public class ProtoToRowConverter {
         try {
             Descriptors.Descriptor descriptor = PbFormatUtils.getDescriptor(messageClassName);
             Class<?> messageClass = Class.forName(messageClassName);
-            if (descriptor.getFile().getSyntax() == Syntax.PROTO3) {
-                readDefaultValues = true;
-            }
             se = new ScriptEvaluator();
             se.setParameters(new String[] {"message"}, new Class[] {messageClass});
             se.setReturnType(RowData.class);

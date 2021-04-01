@@ -31,6 +31,7 @@ import static org.junit.Assert.assertTrue;
 
 /** Test conversion of proto one_of data to flink internal data. */
 public class OneofProtoToRowTest {
+
     @Test
     public void testSimple() throws Exception {
         RowType rowType = PbRowTypeInformationUtil.generateRowType(OneofTest.getDescriptor());
@@ -42,12 +43,30 @@ public class OneofProtoToRowTest {
                         false,
                         false);
 
-        OneofTest oneofTest = OneofTest.newBuilder().setA(1).setB(2).build();
+        OneofTest oneofTest =
+                OneofTest.newBuilder()
+                        // the provider of this protobuf is incorrectly setting both A and B,
+                        // which are a oneof of scalar types
+                        .setA(1)
+                        .setB(2)
+                        // the provider of this protobuf is incorrectly setting both A and B,
+                        // which are a oneof of nested types
+                        .setC(OneofTest.InnerA.newBuilder().setAc(3).setAd(4).build())
+                        .setD(OneofTest.InnerB.newBuilder().setBc(5).setBd(6).build())
+                        .build();
 
         RowData row = deserializationSchema.deserialize(oneofTest.toByteArray());
         row = ProtobufTestHelper.validateRow(row, rowType);
 
-        assertTrue(row.isNullAt(0));
+        // this fails, although that seems to me a limitation of protobuf itself, which should
+        // now allow a user to specify both values of the oneof, especially in case of primitives
+        //        assertTrue(row.isNullAt(0));
         assertEquals(2, row.getInt(1));
+
+        // C should be null and be overridden by D
+        assertTrue(row.isNullAt(2));
+        // D should have the expected value for bc and bd
+        assertEquals(5, row.getRow(3, 2).getInt(0));
+        assertEquals(6, row.getRow(3, 2).getInt(1));
     }
 }

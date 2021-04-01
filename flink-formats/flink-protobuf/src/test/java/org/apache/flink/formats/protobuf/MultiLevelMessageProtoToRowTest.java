@@ -53,6 +53,7 @@ public class MultiLevelMessageProtoToRowTest {
                         .setC(false)
                         .setA(innerMessageTest2)
                         .build();
+
         MultipleLevelMessageTest multipleLevelMessageTest =
                 MultipleLevelMessageTest.newBuilder().setD(innerMessageTest).setA(1).build();
 

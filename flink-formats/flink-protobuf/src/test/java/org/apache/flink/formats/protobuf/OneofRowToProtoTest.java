@@ -26,16 +26,58 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /** Test conversion of flink internal map data to one_of proto data. */
 public class OneofRowToProtoTest {
     @Test
-    public void testSimple() throws Exception {
-        RowData row = GenericRowData.of(1, 2);
+    public void testSimpleWithInvalidInput() throws Exception {
+        // testing with an invalid inputs: a user should not specify several values of a oneof
+        RowData row = GenericRowData.of(1, 2, GenericRowData.of(3, 4), GenericRowData.of(5, 6));
 
         byte[] bytes = ProtobufTestHelper.rowToPbBytes(row, OneofTest.class);
         OneofTest oneofTest = OneofTest.parseFrom(bytes);
+
         assertFalse(oneofTest.hasA());
+        assertTrue(oneofTest.hasB());
         assertEquals(2, oneofTest.getB());
+
+        assertFalse(oneofTest.hasC());
+        assertTrue(oneofTest.hasD());
+        assertEquals(OneofTest.InnerB.newBuilder().setBc(5).setBd(6).build(), oneofTest.getD());
+    }
+
+    @Test
+    public void testSimpleWithvalidInputFirstValues() throws Exception {
+        // testing with an valid input: only the 1rst value of the oneof is specified
+        RowData row = GenericRowData.of(1, null, GenericRowData.of(3, 4), null);
+
+        byte[] bytes = ProtobufTestHelper.rowToPbBytes(row, OneofTest.class);
+        OneofTest oneofTest = OneofTest.parseFrom(bytes);
+
+        assertTrue(oneofTest.hasA());
+        assertEquals(1, oneofTest.getA());
+        assertFalse(oneofTest.hasB());
+
+        assertTrue(oneofTest.hasC());
+        assertEquals(OneofTest.InnerA.newBuilder().setAc(3).setAd(4).build(), oneofTest.getC());
+        assertFalse(oneofTest.hasD());
+    }
+
+    @Test
+    public void testSimpleWithvalidInputSecondValues() throws Exception {
+        // testing with an valid input: only the 2nd value of the oneof is specified
+        RowData row = GenericRowData.of(null, 2, null, GenericRowData.of(5, 6));
+
+        byte[] bytes = ProtobufTestHelper.rowToPbBytes(row, OneofTest.class);
+        OneofTest oneofTest = OneofTest.parseFrom(bytes);
+
+        assertFalse(oneofTest.hasA());
+        assertTrue(oneofTest.hasB());
+        assertEquals(2, oneofTest.getB());
+
+        assertFalse(oneofTest.hasC());
+        assertTrue(oneofTest.hasD());
+        assertEquals(OneofTest.InnerB.newBuilder().setBc(5).setBd(6).build(), oneofTest.getD());
     }
 }
