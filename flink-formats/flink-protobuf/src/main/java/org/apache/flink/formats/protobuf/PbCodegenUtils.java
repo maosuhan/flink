@@ -162,7 +162,7 @@ public class PbCodegenUtils {
      *
      * @return The java code phrase which represents default value calculation.
      */
-    public static String getDefaultPbValue(FieldDescriptor fieldDescriptor)
+    public static String getDefaultPbValue(FieldDescriptor fieldDescriptor, String nullLiteral)
             throws PbCodegenException {
         switch (fieldDescriptor.getJavaType()) {
             case MESSAGE:
@@ -182,7 +182,7 @@ public class PbCodegenUtils {
             case DOUBLE:
                 return "0.0d";
             case BYTE_STRING:
-                return "ByteString.EMPTY";
+                return "ByteString.copyFromUtf8(\"" + nullLiteral + "\")";
             case BOOLEAN:
                 return "false";
             default:
@@ -211,14 +211,19 @@ public class PbCodegenUtils {
             String pbVar,
             String dataVar,
             FieldDescriptor elementPbFd,
-            LogicalType elementDataType)
+            LogicalType elementDataType,
+            PbFormatConfig pbFormatConfig)
             throws PbCodegenException {
         PbCodegenAppender appender = new PbCodegenAppender();
         String protoTypeStr = PbCodegenUtils.getTypeStrFromProto(elementPbFd, false);
         String dataTypeStr = PbCodegenUtils.getTypeStrFromLogicType(elementDataType);
         appender.appendLine(protoTypeStr + " " + pbVar);
         appender.appendSegment("if(" + arrDataVar + ".isNullAt(" + iVar + ")){");
-        appender.appendLine(pbVar + "=" + PbCodegenUtils.getDefaultPbValue(elementPbFd));
+        appender.appendLine(
+                pbVar
+                        + "="
+                        + PbCodegenUtils.getDefaultPbValue(
+                                elementPbFd, pbFormatConfig.getWriteNullStringLiterals()));
         appender.appendSegment("}else{");
         appender.appendLine(dataTypeStr + " " + dataVar);
         String getElementDataCode =
@@ -226,7 +231,8 @@ public class PbCodegenUtils {
                         arrDataVar, iVar, elementDataType);
         appender.appendLine(dataVar + " = " + getElementDataCode);
         PbCodegenSerializer codegenSer =
-                PbCodegenSerializeFactory.getPbCodegenSer(elementPbFd, elementDataType);
+                PbCodegenSerializeFactory.getPbCodegenSer(
+                        elementPbFd, elementDataType, pbFormatConfig);
         String code = codegenSer.codegen(pbVar, dataVar);
         appender.appendSegment(code);
         appender.appendSegment("}");

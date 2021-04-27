@@ -36,13 +36,11 @@ public class SimpleProtoToRowTest {
     @Test
     public void testSimple() throws Exception {
         RowType rowType = PbRowTypeInformationUtil.generateRowType(SimpleTest.getDescriptor());
+        PbFormatConfig formatConfig =
+                new PbFormatConfig(SimpleTest.class.getName(), false, false, "");
         PbRowDataDeserializationSchema deserializationSchema =
                 new PbRowDataDeserializationSchema(
-                        rowType,
-                        InternalTypeInfo.of(rowType),
-                        SimpleTest.class.getName(),
-                        false,
-                        false);
+                        rowType, InternalTypeInfo.of(rowType), formatConfig);
 
         SimpleTest simple =
                 SimpleTest.newBuilder()
@@ -77,13 +75,11 @@ public class SimpleProtoToRowTest {
     @Test
     public void testNotExistsValueIgnoringDefault() throws Exception {
         RowType rowType = PbRowTypeInformationUtil.generateRowType(SimpleTest.getDescriptor());
+        PbFormatConfig formatConfig =
+                new PbFormatConfig(SimpleTest.class.getName(), false, false, "");
         PbRowDataDeserializationSchema deserializationSchema =
                 new PbRowDataDeserializationSchema(
-                        rowType,
-                        InternalTypeInfo.of(rowType),
-                        SimpleTest.class.getName(),
-                        false,
-                        false);
+                        rowType, InternalTypeInfo.of(rowType), formatConfig);
 
         SimpleTest simple =
                 SimpleTest.newBuilder()
@@ -104,13 +100,11 @@ public class SimpleProtoToRowTest {
     @Test
     public void testDefaultValues() throws Exception {
         RowType rowType = PbRowTypeInformationUtil.generateRowType(SimpleTest.getDescriptor());
+        PbFormatConfig formatConfig =
+                new PbFormatConfig(SimpleTest.class.getName(), false, true, "");
         PbRowDataDeserializationSchema deserializationSchema =
                 new PbRowDataDeserializationSchema(
-                        rowType,
-                        InternalTypeInfo.of(rowType),
-                        SimpleTest.class.getName(),
-                        false,
-                        true);
+                        rowType, InternalTypeInfo.of(rowType), formatConfig);
 
         SimpleTest simple = SimpleTest.newBuilder().setC(false).setD(0.1f).setE(0.01).build();
 

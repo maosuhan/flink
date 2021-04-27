@@ -73,8 +73,9 @@ public class ProtobufTestHelper {
                         org.apache.flink.formats.protobuf.PbFormatUtils.getDescriptor(
                                 messageClass.getName()));
         row = validateRow(row, rowType);
+        PbFormatConfig formatConfig = new PbFormatConfig(messageClass.getName(), false, false, "");
         PbRowDataSerializationSchema serializationSchema =
-                new PbRowDataSerializationSchema(rowType, messageClass.getName());
+                new PbRowDataSerializationSchema(rowType, formatConfig);
         byte[] bytes = serializationSchema.serialize(row);
         return bytes;
     }
@@ -84,8 +85,9 @@ public class ProtobufTestHelper {
         RowType rowType =
                 PbRowTypeInformationUtil.generateRowType(
                         PbFormatUtils.getDescriptor(messageClass.getName()));
+        PbFormatConfig formatConfig = new PbFormatConfig(messageClass.getName(), false, false, "");
         PbRowDataSerializationSchema serializationSchema =
-                new PbRowDataSerializationSchema(rowType, messageClass.getName());
+                new PbRowDataSerializationSchema(rowType, formatConfig);
         byte[] bytes = serializationSchema.serialize(row);
         return bytes;
     }
