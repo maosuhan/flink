@@ -68,24 +68,28 @@ public class ProtobufTestHelper {
     }
 
     public static byte[] rowToPbBytes(RowData row, Class messageClass) throws Exception {
+        return rowToPbBytes(
+                row, messageClass, new PbFormatConfig(messageClass.getName(), false, false, ""));
+    }
+
+    public static byte[] rowToPbBytes(RowData row, Class messageClass, PbFormatConfig formatConfig)
+            throws Exception {
         RowType rowType =
                 PbRowTypeInformationUtil.generateRowType(
                         org.apache.flink.formats.protobuf.PbFormatUtils.getDescriptor(
                                 messageClass.getName()));
         row = validateRow(row, rowType);
-        PbFormatConfig formatConfig = new PbFormatConfig(messageClass.getName(), false, false, "");
         PbRowDataSerializationSchema serializationSchema =
                 new PbRowDataSerializationSchema(rowType, formatConfig);
         byte[] bytes = serializationSchema.serialize(row);
         return bytes;
     }
 
-    public static byte[] rowToPbBytesWithoutValidation(RowData row, Class messageClass)
-            throws Exception {
+    public static byte[] rowToPbBytesWithoutValidation(
+            RowData row, Class messageClass, PbFormatConfig formatConfig) {
         RowType rowType =
                 PbRowTypeInformationUtil.generateRowType(
                         PbFormatUtils.getDescriptor(messageClass.getName()));
-        PbFormatConfig formatConfig = new PbFormatConfig(messageClass.getName(), false, false, "");
         PbRowDataSerializationSchema serializationSchema =
                 new PbRowDataSerializationSchema(rowType, formatConfig);
         byte[] bytes = serializationSchema.serialize(row);

@@ -38,7 +38,7 @@ import static org.junit.Assert.assertFalse;
  */
 public class Pb3ToRowTest {
     @Test
-    public void testMessage() throws Exception {
+    public void testDeserialization() throws Exception {
         RowType rowType = PbRowTypeInformationUtil.generateRowType(Pb3Test.getDescriptor());
         PbFormatConfig formatConfig = new PbFormatConfig(Pb3Test.class.getName(), false, false, "");
         PbRowDataDeserializationSchema deserializationSchema =
@@ -98,7 +98,7 @@ public class Pb3ToRowTest {
     }
 
     @Test
-    public void testDefaultValues() throws Exception {
+    public void testReadDefaultValues() throws Exception {
         RowType rowType = PbRowTypeInformationUtil.generateRowType(Pb3Test.getDescriptor());
         PbFormatConfig formatConfig = new PbFormatConfig(Pb3Test.class.getName(), false, false, "");
         PbRowDataDeserializationSchema deserializationSchema =

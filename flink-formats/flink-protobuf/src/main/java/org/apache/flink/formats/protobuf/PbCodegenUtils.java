@@ -173,7 +173,7 @@ public class PbCodegenUtils {
             case LONG:
                 return "0L";
             case STRING:
-                return "\"\"";
+                return "\"" + nullLiteral + "\"";
             case ENUM:
                 return PbFormatUtils.getFullJavaName(fieldDescriptor.getEnumType())
                         + ".values()[0]";
@@ -182,7 +182,7 @@ public class PbCodegenUtils {
             case DOUBLE:
                 return "0.0d";
             case BYTE_STRING:
-                return "ByteString.copyFromUtf8(\"" + nullLiteral + "\")";
+                return "ByteString.EMPTY";
             case BOOLEAN:
                 return "false";
             default:
